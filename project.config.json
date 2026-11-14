@@ -1,0 +1,17 @@
+{
+  "packageName": "@xyb-community/testicular-workbench",
+  "title": "睾丸癌患者工作台",
+  "repository": "https://github.com/xyb-openharness-dsh-plugins/testicular-workbench",
+  "description": "本机优先的睾丸癌（生殖细胞肿瘤）术后标志物、监测节点、生育力保存与就诊准备记录工作台",
+  "slug": "testicular",
+  "layoutMode": "business-first",
+  "businessWidth": 0.65,
+  "targetUsers": "睾丸癌确诊后与随访期的青年患者本人（15–45 岁为主），以及陪同就诊的家属；仅做信息整理与就诊准备，不做诊断与治疗建议",
+  "scenario": "根治性睾丸切除术后：按医生方案随访血清标志物（AFP/hCG/LDH）、监测节点（影像/化验）与生育力保存事项；就诊前把散落的报告与问题整理成可带的清单",
+  "coreFlow": [
+    "进入工作台先看到当前随访状态总览（距下次节点天数、医生方案原话、今日待办）",
+    "录入或核对本次化验/影像结果与医生原话，AI 候选协助整理报告字段，逐项核对后入库",
+    "随时间回顾标志物趋势与节点完成情况，导出就诊清单与档案摘要"
+  ],
+  "completion": "患者能在就诊前用一份可导出的清单讲清「我做了哪些检查、指标变化如何、我想问什么」，全程不生成任何判读"
+}

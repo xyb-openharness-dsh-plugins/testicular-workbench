@@ -1,0 +1,6 @@
+- insert:
+    - id: testicular-main
+      name: "@xyb-community/testicular-workbench"
+      # 接线前置：宿主把业务资料根目录指向 dshHomePath('testicular')
+      config:
+        root: !!js dshHomePath('testicular')
