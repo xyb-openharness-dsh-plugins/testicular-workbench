@@ -28,6 +28,15 @@ const PATTERNS = [
   [/TODO\s*[:：]\s*(项目|病种|替换|填)/g, '未落地的 TODO'],
 ]
 
+/* 家族构建/服务注入令牌不是「初始化占位符」：它们会被替换，只是不在初始化流程——
+ *   - scripts/build-client.mjs 构建期注入 __PANEL_LAYOUT__ / __AGENT_PANE__ / __VERSION__；
+ *   - dsh/server.js injectTokens 服务期注入 __API_BASE__ / __VERSION_DISPLAY__ / __VERSION__ / __BUILD_DATE__。
+ * 白名单逐个枚举，不放开通配；其余双下划线占位符照旧报红。 */
+const INJECT_TOKENS = new Set([
+  '__API_BASE__', '__VERSION__', '__VERSION_DISPLAY__', '__BUILD_DATE__',
+  '__PANEL_LAYOUT__', '__AGENT_PANE__',
+])
+
 const TEXT_EXT = new Set(['.js', '.mjs', '.cjs', '.ts', '.json', '.html', '.css', '.yml', '.yaml', '.md', '.txt', '.patch'])
 
 function walk(dir, out = []) {
@@ -67,8 +76,9 @@ for (const file of files) {
   let body
   try { body = readFileSync(file, 'utf8') } catch { continue }
   for (const [re, label] of PATTERNS) {
-    const m = body.match(re)
-    if (m) hits.push(`${file.replace(ROOT + '/', '')}: ${label} → ${m[0].slice(0, 40)}`)
+    const found = [...body.matchAll(re)].map((m) => m[0])
+    const kept = label === '双下划线占位符 __NAME__' ? found.filter((t) => !INJECT_TOKENS.has(t)) : found
+    if (kept.length) hits.push(`${file.replace(ROOT + '/', '')}: ${label} → ${kept[0].slice(0, 40)}`)
   }
 }
 

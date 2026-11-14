@@ -1,14 +1,78 @@
+/**
+ * 包的入口：DSH 插件的服务端侧。
+ *
+ * 宿主（Harness）加载的就是这个文件，需要 `name` / `inject` / `Config` / `apply` 四样：
+ * - `name` / `inject` / `apply` 的实质逻辑在 `dsh/workbench.js` 与 `dsh/server.js`（零宿主依赖、可单测）；
+ * - `Config` 必须在**本文件**末尾——官方要求它是 Schemastery schema，而 Schemastery 是宿主提供的
+ *   peer 依赖，本仓库里装不上。为了不让 `apply()` 跟着不可测，只把这一行留在入口。
+ *
+ * 宿主挂载形态（家族口径）：
+ *   - API 挂在 `/api/testicular` 前缀下，页面拼 `${API_BASE}/api/bootstrap`
+ *     = `/api/testicular/api/bootstrap`（**交界处只有一个 /api 对**，不是重复）；
+ *   - UI 挂在 `/testicular` 前缀下（public/ 存在后生效）。
+ */
 import Schema from '@deepseek-ai/schemastery'
-import { readFileSync } from 'node:fs'
+import { existsSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { Workbench } from './workbench.js'
+import { createHandler } from './server.js'
+import { PLUGIN_ID, API_PREFIX, HOME_DIR, DB_FILE, UI_ENTRY } from '../lib/identity.js'
+import { version, displayVersion } from '../lib/version.js'
 
-export const name = 'testicular-main'
+export { Workbench } from './workbench.js'
+export { createHandler, resolveStatic, checkDataDir, injectTokens } from './server.js'
+export { readBootstrap, bootstrapForExit } from './readmodels.js'
+export { openStore, closeStore, migrate, tableNames } from './store.js'
+export { seedDemoData, hasDemoData } from './demo.js'
+export { PLUGIN_ID, API_PREFIX, HOME_DIR, DB_FILE, UI_ENTRY } from '../lib/identity.js'
+
+export const name = PLUGIN_ID
 export const inject = ['webServer', 'connection']
-const manifest = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
+
+const HERE = dirname(fileURLToPath(import.meta.url))
+export const PUBLIC_DIR = join(HERE, '..', 'public')
+
+/**
+ * 宿主挂载形态的 API_BASE。
+ */
+export const API_BASE_HOSTED = `/api/${API_PREFIX}`
+
+/** 建一个带认证检查的 handler（宿主形态；认证由 connection 能力提供）。 */
+export function createHostHandler(ctx, workbench) {
+  const services = {
+    version, displayVersion,
+    capabilities: ['bootstrap', 'health', 'data-root', 'subjects', 'records', 'export'],
+    health: () => workbench.health(),
+    bootstrap: () => workbench.bootstrap(),
+    /* 资料目录与档案：面板「配置目录」与页面「新建我的档案」都走这些 */
+    dataRoot: () => workbench.dataRoot,
+    switchRoot: (dir) => workbench.switchRoot(dir),
+    listSubjects: () => workbench.listSubjects(),
+    createSubject: (input) => workbench.createSubject(input),
+    deleteSubject: (key) => workbench.deleteSubject(key),
+    addRecord: (input) => workbench.addRecord(input),
+    exportData: () => workbench.exportData(),
+  }
+  const inner = createHandler({ apiBase: API_BASE_HOSTED, publicDir: PUBLIC_DIR, services })
+  return (req, res) => {
+    const send = (status, body) => {
+      res.writeHead(status, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' })
+      res.end(JSON.stringify(body))
+    }
+    if (ctx) {
+      if (typeof ctx.connection?.requestRejection !== 'function') return send(503, { error: 'connection authentication capability unavailable' })
+      const rejection = ctx.connection.requestRejection(req)
+      if (rejection !== undefined) return send(rejection, { error: 'Authentication required' })
+    }
+    return inner(req, res)
+  }
+}
 
 /**
  * config 是**第二个参数**，不是 `ctx.config`。
  *
- * 家族实测（2026-10-25，pericarditis 回流）：写成 `ctx.config?.root` 时宿主直接报
+ * 家族实测（2026-10-25，家族各仓回流）：写成 `ctx.config?.root` 时宿主直接报
  *   `cannot get property "config" without inject`
  * —— Cordis 的服务访问守卫要求把 'config' 声明进 inject，而 config 本来就不走服务通道。
  */
@@ -18,7 +82,7 @@ export function apply(ctx, config = {}) {
   if (typeof root !== 'string' || root.trim() === '') {
     /* 不裸 throw 白屏：登记一个返回可读错误的健康接口，让前端能显示原因 */
     ctx.effect(() => ctx.webServer.register({
-      kind: 'exact', path: '/api/testicular/health',
+      kind: 'exact', path: `${API_BASE_HOSTED}/health`,
       handler(req, res) {
         res.writeHead(503, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' })
         res.end(JSON.stringify({ error: 'root 未配置', detail: 'cordis.patch.yml 需要 config.root: !!js dshHomePath(...)' }))
@@ -26,25 +90,17 @@ export function apply(ctx, config = {}) {
     }), 'testicular health (unconfigured)')
     return
   }
-  ctx.effect(() => ctx.webServer.register({
-    kind: 'exact', path: '/api/testicular/health',
-    handler(req, res) {
-      const send = (status, body) => {
-        res.writeHead(status, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' })
-        res.end(JSON.stringify(body))
-      }
-      if (typeof ctx.connection?.requestRejection !== 'function') return send(503, { error: 'connection authentication capability unavailable' })
-      const rejection = ctx.connection.requestRejection(req)
-      if (rejection !== undefined) return send(rejection, { error: 'Authentication required' })
-      if (req.method !== 'GET') return send(405, { error: 'Method not allowed' })
-      send(200, { ok: true, version: manifest.version, apiVersion: 'v1', capabilities: ['health', 'data-root'], dataRoot: root })
-    },
-  }), 'testicular health')
+  const workbench = new Workbench({ root })
+  workbench.open()
+  ctx.effect(() => workbench.close(), 'testicular store close')
+  const handler = createHostHandler(ctx, workbench)
+  ctx.effect(() => ctx.webServer.register({ kind: 'prefix', path: API_BASE_HOSTED, handler }), 'testicular routes')
+  ctx.effect(() => ctx.webServer.register({ kind: 'prefix', path: '/' + API_PREFIX, handler }), 'testicular ui')
 }
 
-/** UI 入口文件是否存在（装机自检用） */
+/** UI 入口文件是否存在（装机自检用；不存在时返回 false 不报错） */
 export function uiReady() {
-  try { return Boolean(readFileSync(new URL('../public/index.html', import.meta.url))) } catch { return false }
+  return existsSync(join(PUBLIC_DIR, 'index.html'))
 }
 
 export const Config = Schema.object({

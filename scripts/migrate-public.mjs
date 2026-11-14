@@ -12,7 +12,7 @@
  *
  * 用法：node scripts/migrate-public.mjs [--check]
  */
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -95,6 +95,12 @@ function expected(name) {
 export { FILES, migrateIndex, migrateApp, expected, SRC, OUT };
 
 function check() {
+  /* 原型未开始（prototypes/v0.2 不存在）时如实跳过：本仓还没到 M5 定点移植阶段，
+     此时既不能生成也不能比对 public/。输出 SKIP 原因，不假装比对通过；原型落地后本闸门自动生效。 */
+  if (!existsSync(SRC)) {
+    console.log('SKIP  prototypes/v0.2 不存在（原型未开始）：public/ 定点移植闸门暂不启用，原型落地后自动生效');
+    return;
+  }
   const problems = [];
   for (const f of FILES) {
     let current = '';
