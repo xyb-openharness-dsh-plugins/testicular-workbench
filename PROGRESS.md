@@ -18,3 +18,9 @@
 - M5 服务层前置完成（子代理移植，已复核）：dsh 七件 + src→lib 链路 + 最小档案 UI；check exit 0（患者档案闸门 4/4）；test 9/9；grep 前病种残留 0；版本 0.1.1。
 - audit 33/38：4 失败（primer-data/primer 入口/prototypes v0.2 = M2 交付物）已收敛至 M2 项；README 疾病概要与 dated DEV-REQUIREMENTS 已补。
 - 下一步：M1（重名率实测 + G1）→ M2 原型（最大块）。
+
+## 2026-11-16 23:2x M1 完成记录（第二夜班窗口 11-16 23:00 → 11-17 08:00）
+
+- 三路并行收口：医学约束 10 主题（CLINICAL-DATA §二/§四题录带访问日期）；USER-RESEARCH 三层台账（0 访谈如实）；DIFF-MATRIX §三重名率实测 16.7%（1.5/9，对 breast v0.4 app.js:34 一级导航逐项对照）。
+- G1 自动签认：docs/signoffs/G1-自动签认.md（7 项全过、返工 0、待晨审追认）。
+- 下一步：M2 原型（本夜最大块）。
