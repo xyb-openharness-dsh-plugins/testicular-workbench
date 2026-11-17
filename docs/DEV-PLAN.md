@@ -20,18 +20,19 @@
 
 ## 三、里程碑计划（无人值守夜班 2026-11-14 23:00 → 11-15 08:00）
 
-| 里程碑 | 计划 | 状态 |
+| 里程碑 | 计划 | 2026-11-17 续跑状态 |
 | --- | --- | --- |
-| M0 | 领取四步 + 文档九件 + 基线 check | 进行中 |
-| M1 | 三路并行调研 + DIFF-MATRIX 全量 + SPEC/USER-RESEARCH/INTERACTION-DESIGN 全量 → G1 自动签认 | 待 |
-| M2 | 演示数据构建器（两套档案）+ prototypes/v0.2 四件套 + 检查点清单逐项 + 独立评审 P0 清零 → G2 | 待 |
-| M3 | schema 0001+0002 冻结 + freeze-contract（已前置完成 0001/0002） → G3 | 已前置 |
-| M4 | fetch 脚本实跑（已完成：235 条）+ research/ 四件套映射断言 | 部分完成 |
-| M5 | 七步移植（dsh 七件 + src→build→lib + 版本簿记）+ MinerU 六部件（未接通形态）+ check/test/audit 全绿 → V1 | 服务层移植进行中 |
-| M6 | 装机（Desktop 可用时才做；不可用如实写未验证） | 待 |
-| M7 | tag + release 草稿冻结到 docs/release-draft/ | 待 |
-| M8 | BACKLOG 状态行回填 PR（先 pull 最新 main） | 待 |
-| M9 | 经验收敛回流 | 待 |
+| M0 | 领取四步 + 文档九件 + 基线 check | 已完成（既有记录） |
+| M1 | 调研 + DIFF-MATRIX + G1 | 已完成；G1 自动签认待晨审追认 |
+| M2 | 两套合成档案 + prototypes/v0.2 + 清单/独立评审 + G2 | HTML及交互自测已交付；等用户确认和独立审查，G2未签 |
+| M3 | schema 0001/0002 冻结 + freeze-contract | 已前置完成；2026-11-17 schema词汇/hash门禁通过 |
+| M4 | clinical trial snapshot + research映射断言 | 未完成：SQLite缺失；JSONL宽检索题名有大量非直接疾病词，见 `docs/TRIAL-SNAPSHOT-REVIEW.md` |
+| M5 | 七步移植/服务层/Agent契约 | 原有代码；2026-11-17 `newSession`+subscribe静态复扫及self-test通过；Desktop未验证 |
+| M6 | pack + DSH Desktop profile安装验证 | 仅 0.1.1 pack dry-run；目标机未安装 DSH Desktop，安装未验证 |
+| M7 | tag + release草稿 | 仅本仓 v0.2.0 草稿；按本任务不打tag、不发Release |
+| M8 | BACKLOG状态行回填PR | 仅本仓草稿；按本任务不改组织 BACKLOG、不创建PR |
+| M9 | 经验收敛与全量门禁 | 未完成：npm test 12/12、audit39/39、pack dry-run通过；npm run check/probe coverage、trial snapshot、UI parity有失败，Desktop未验证 |
+
 
 ## 四、夜间默认值（无人值守，晨审追认）
 

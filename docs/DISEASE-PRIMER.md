@@ -1,109 +1,46 @@
-# 疾病概要 · <病种名>
+# 疾病概要 · 睾丸癌
 
-> 本项目实例文件，由 `xyb-workbench-starter` 的 `templates/DISEASE-PRIMER.md` 复制而来。
-> 规范：`docs/36-DISEASE-PRIMER.md`。填完打勾，未填的写「本台尚未整理」——**不许删段**。
+- 项目 / 品牌：小勇宝 TestiPal
+- 病种：睾丸癌（Testicular Cancer）
+- 最后更新：2026-11-17
+- 数据文件：`prototypes/v0.2/primer-data.js`（`window.DISEASE_PRIMER`）
+- README 对应段：`README.md` 的 `## 疾病概要`
+- 原型入口：顶栏「? 疾病概要」；由 `assets/patterns/disease-primer.js` 以整页视图打开
+- 医学审核：未完成；本段仅归纳公开患者教育网页和本机检索状态，不提供个人判断
 
-- 项目 / 品牌：<品牌名 + 英文名>
-- 病种：<中文名>（<英文名>）
-- 最后更新：<YYYY-MM-DD>
-- 数据文件：`prototypes/<vX>/primer-data.js`（`window.DISEASE_PRIMER`）
-- README 对应段：`## 疾病概要`
+## 1 定义
 
-## 1 定义（`definition`）
+睾丸癌是发生于睾丸的恶性肿瘤。NCI 资料说明多数睾丸癌属于生殖细胞肿瘤，并按精原细胞瘤与非精原细胞瘤分类介绍。本台不据个人信息分类或分期。
 
-<3–6 句：这是什么病；分类口径（哪份文件、第几版）；常见亚型；好发部位/年龄段的事实陈述。>
+来源：NCI · Testicular Cancer—Health Professional Version · 在线资料，访问 2026-11-16 · 二次综述，非本项目取得的指南原件 · 页码不适用。
 
-- 不写「预后差 / 恶性程度高 / 发展快」这类判读。
-- 亚型名字一律用 WHO 现行版本的写法，不混用旧名；旧名要保留时写「旧称 …」。
+## 2 医学资料规范和指南情况
 
-**来源**：<机构> · <文件全名> · <版本/年份> · <原件已取得 / 未取得原件，据二次来源> · <页码 或「页码待核」>
-
-## 2 医学资料规范和指南情况（`evidence`）
-
-| 机构 | 文件 | 版本 / 年份 | 原件 | 本台的用途 |
+| 机构 | 文件/资料 | 版本 / 日期 | 原件状态 | 用途 |
 |---|---|---|---|---|
-| <NCCN> | <文件全名> | <Vx.20xx（生效日）> | 已取得 / 未取得 | <哪一块内容以它为准> |
-| <AJCC> | <Staging Manual 第 8 版，章节名> | <2017> | | |
-| <WHO> | <分类文件全名> | <第 x 版（年）> | | |
-| <CSCO / 国家卫健委> | <文件全名> | <年版> | | |
+| NCCN | Testicular Cancer Guidelines 官方 PDF 入口 | 访问 2026-11-16；版本待核 | **未取得原件**；需自行注册，页码待核 | 待取得原件后核对；不引述具体条文 |
+| NCI | Testicular Cancer Treatment | 页面标注更新 2023-05-17；访问 2026-11-16 | 公开患者教育网页；不是指南原件 | 一般信息来源 |
 
-- 一台一表，不合并。
-- **未取得原件的，必须在表里标出来**，并且只写「存在、大致讲什么」，不引用具体条文。
-- 两套分期体系（如 TNM 与国内分期）并存时，两行都列，不在本表里做换算。
+NCCN 原链接为 PDF 地址，但本轮未能取得文件内容；本台将其记作受限官方入口，不声称读过原件。患者访谈与临床审核均未完成。
 
-**来源**：见上表逐行。
+来源：[NCCN Testicular Cancer 官方入口（需自行注册）](https://www.nccn.org/professionals/physician_gls/pdf/testicular.pdf)；[NCI Testicular Cancer Treatment](https://www.cancer.gov/types/testicular/treatment)。访问日期 2026-11-16。
 
-## 3 目前治疗全景概要（`landscape`）
+## 3 目前治疗全景概要
 
-按**病期 / 线序**分组，每组只列「指南列举过的手段类别」，不排序、不比优劣。
-
-### 3.1 <局限期 / 早期>
-- <手段类别>：<一句话说清是什么、用在哪一期>。取舍属于医生判断。
-
-### 3.2 <局部晚期 / 晚期 / 转移后>
-- <手段类别>：…
-
-### 3.3 <其他需要单列的情形>
-- <例如：复发后、寡转移、特殊亚型>
-
-**这一段末尾必须有固定出口（原话照抄，不要改写）：**
+NCI 患者教育页面列有手术、放射治疗、化学治疗与主动监测等类别，并提供临床研究信息入口。这里只说明公开网页涉及的类别，不按个人病情映射，不排序或比较；NCCN 原件未取得，相关指南条文待核。
 
 > 以上是文献与指南里列出的手段，按病期与线序排列，不代表任何一项适合你。选哪一个，这一句需要问你的医生。
 
-<!-- 非肿瘤慢性病种（无病期与线序）改用登记的第二句，并在 docs/SPEC.md 写明选了哪一句：
-> 以上是文献与指南里列出的手段类别，按受累器官与病情轻重排列，不代表任何一项适合你。选哪一个，这一句需要问你的医生。
-     L13 会断言这句在场且口径已登记；两句都不在 = FAIL。 -->
+来源：[NCI Testicular Cancer Treatment](https://www.cancer.gov/types/testicular/treatment) · 患者教育网页，更新 2023-05-17；访问 2026-11-16。NCCN 原件未取得，页码待核。
 
-**来源**：<机构> · <文件全名> · <版本> · <页码>
+## 4 发展趋势
 
-## 4 发展趋势（`trend`）
+截至 2026-11-16，本轮没有核实到可写入的 NCCN 指南版本更替、监管批件或指南结构变化事实，因此不作趋势推测。本机检索快照于 2026-11-14 保存 235 条搜索返回记录；疾病相关性尚未逐条核实，且部分在线通道失败，不能据此称为睾丸癌相关试验数量或完整覆盖。NCI 患者教育网页标注最近更新日期为 2023-05-17；这不是指南版本变化。
 
-只写**已发生的事实**，每条都带日期或版本号。五类白名单（`docs/36-DISEASE-PRIMER.md` §2.3）：
+来源：本机 `research/testicular/manifest.json`（访问 2026-11-16；本地数据，无法提供外部直链）；[NCI Testicular Cancer Treatment](https://www.cancer.gov/types/testicular/treatment)（网页更新时间，访问 2026-11-16）。
 
-1. 指南版本更替 —— <例：2026-03-12 NCCN 由 V2.2026 更新为 V3.2026 并生效>
-2. 监管批件 —— <例：YYYY-MM-DD NMPA 批准 <药> 用于 <适应症>；批件号未核实时写「批件号未核实」>
-3. 在研登记规模与阶段分布 —— <例：截至 YYYY-MM，<平台名> 可检索到 N 条，I 期 x / II 期 y / III 期 z；检索式与日期一并记>
-4. 分类体系更新 —— <例：WHO 第 5 版（2020）取代第 4 版（2013）>
-5. 指南结构变化 —— <例：20xx 版新增独立章节「…」>
+## 原型验收状态
 
-**禁止**：展望、预测、推荐、优劣比较、上市时间猜测、疗效数字对比。
-禁止词表见规范 §2.3，`check-conformance.mjs` 的 `primer/趋势段` 会扫。
-
-**来源**：<逐条对应，一条来源可以覆盖多条事实，但不能没有>
-
-## 5 落地清单
-
-- [ ] `prototypes/<vX>/primer.css`（从 `assets/patterns/disease-primer.css` 复制，按项目令牌微调颜色变量，**不改结构**）
-- [ ] `prototypes/<vX>/primer.js`（从 `assets/patterns/disease-primer.js` 复制，不改逻辑）
-- [ ] `prototypes/<vX>/primer-data.js`（本文件四段转成 `window.DISEASE_PRIMER`）
-- [ ] `index.html` 三处引用：`<link rel="stylesheet" href="primer.css">` / `<script src="primer-data.js">` / `<script src="primer.js">`
-- [ ] 顶栏出现「?」（不写按钮也行，模块会自动插进 `.top-actions`；自定义位置就放 `<button data-primer-open>`）
-- [ ] README 的 `## 疾病概要` 四段正文写好，小标题与数据文件一致
-- [ ] `node scripts/probe-disease-primer.mjs --url <原型地址>` 全绿，`--self-test` 至少 3 条 FAIL
-
-## 6 验收（P1–P8）
-
-| 编号 | 判据 | 结果 |
-|---|---|---|
-| P1 | 顶栏有可点「?」，aria-label 说明四段 | ☐ |
-| P2 | 整页面板，四段齐全且顺序为 定义 → 指南 → 治疗全景 → 趋势 | ☐ |
-| P3 | 面板宽高 ≥ 视口 90% | ☐ |
-| P4 | 打开压一条 history，`history.back()` 收起 | ☐ |
-| P5 | 「返回」「关闭」两个独立入口 | ☐ |
-| P6 | 关闭后焦点回触发按钮、滚动位置不变 | ☐ |
-| P7 | Esc 只退一层 | ☐ |
-| P8 | 四段齐全、每段有来源、趋势段无禁止词 | ☐ |
-
-## 7 本项目教训
-
-<填：写这段时被纠正过什么、哪句话差点滑成判断、哪份文件其实没拿到原件。>
-
-## 唯一源约定（2026-11-08 短肠综合征轮回流，L79）
-
-- 疾病概要内容唯一源 = `primer-data.js` 自持四段，id 固定 `definition / evidence / landscape / trend`
-  （audit 与 check-primer-links 按此静态解析；委托 `window.DEMO.primer` 的写法过不了审计）。
-- `landscape` 段用 `points` 数组承载条目，末条必须是登记过的固定出口句
-  （肿瘤「按病期与线序排列」/ 非肿瘤「按受累器官与病情轻重排列」），且含
-  「不代表任何一项适合你」「需要问你的医生」（36 号 §2.2 原话，L13 断言）。
-- `demo-data.js` 不复制 primer 内容；服务端读模型经 `loadDemoData()` 顺带求值 primer-data 挂载。
-- 渲染端同时支持 `body`（段落）与 `points`（列表）两种形态。
+- HTML 路径：`prototypes/v0.2/index.html`；本机 Chromium file:// 已预览。2026-11-17 本仓探针 P1–P9 + E0：10/10 通过；带本仓 `--url ... --self-test` 注入弹窗/缺返回/趋势禁词后预期 3 项 FAIL，自测通过。
+- 指南资料：本轮没有下载或读取 NCCN PDF 原件；`scripts/check-primer-links.mjs --http`：12/12 通过（HTML/官方入口 HTTP 200；该结果不代表 NCCN PDF 原件已取得）。
+- 用户确认：待用户审阅原型模块范围；未确认前 G2 不签认。

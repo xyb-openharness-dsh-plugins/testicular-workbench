@@ -50,6 +50,12 @@ function extractRoutes(src) {
     }
     if (routes.length) return [...new Set(routes)];
   }
+  /* Standalone prototypes may define navigation in navItems instead of a router map. */
+  const nav = src.match(/(?:var|const|let)\s+navItems\s*=\s*\[([\s\S]*?)\n\s*\];/);
+  if (nav) {
+    const routes = [...nav[1].matchAll(/\[\s*['"]([a-z][a-z0-9-]*)['"]\s*,/g)].map((m) => m[1]);
+    if (routes.length) return [...new Set(routes)];
+  }
   return null;
 }
 
