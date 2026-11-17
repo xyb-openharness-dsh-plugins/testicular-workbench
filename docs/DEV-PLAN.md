@@ -31,7 +31,7 @@
 | M6 | pack + DSH Desktop profile安装验证 | 仅 0.1.1 pack dry-run；目标机未安装 DSH Desktop，安装未验证 |
 | M7 | tag + release草稿 | 仅本仓 v0.2.0 草稿；按本任务不打tag、不发Release |
 | M8 | BACKLOG状态行回填PR | 仅本仓草稿；按本任务不改组织 BACKLOG、不创建PR |
-| M9 | 经验收敛与全量门禁 | 未完成：npm test 12/12、audit39/39、pack dry-run通过；npm run check/probe coverage、trial snapshot、UI parity有失败，Desktop未验证 |
+| M9 | 经验收敛与全量门禁 | 未完成：npm test 12/12、audit39/39、pack dry-run通过；路由 probe coverage 已修复并通过；npm run check 当前因 trial SQLite 缺失失败，独立 UI parity 因 production `public/` 未生成失败；Desktop 未验证 |
 
 
 ## 四、夜间默认值（无人值守，晨审追认）

@@ -11,7 +11,7 @@
 | M6 | pack/测试profile安装 | M2–M5、版本冻结 | pack、正确Desktop profile安装及验证 | `check-install` 明确找不到 `io.dsh.desktop`；没有包安装 | 未完成（Desktop未安装） |
 | M7 | 发布准备 | M6 | 只准备草稿；本任务不打tag、不发Release | `docs/release-draft/M7-M8-草稿.md` | 草稿 |
 | M8 | BACKLOG回填 | 发布授权 | 本任务不改组织仓 | 仅本仓草稿 | 不执行 |
-| M9 | 全量门禁 | 前置里程碑闭合 | npm run check、npm test、五项门禁 | `npm test`12/12、audit39/39、pack dry-run通过；check因probe-coverage失败；trial snapshot/UI parity失败 | 未完成 |
+| M9 | 全量门禁 | 前置里程碑闭合 | npm run check、npm test、五项门禁 | `npm test`12/12、audit39/39、pack dry-run通过；路由探针覆盖门禁已修复并通过；`npm run check` 当前因缺失 trial SQLite 失败；独立 `check-ui-parity` 因未生成 production `public/` 失败；Desktop 未验证 | 未完成 |
 
 ## 交接
 
