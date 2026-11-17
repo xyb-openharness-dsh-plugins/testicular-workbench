@@ -34,7 +34,6 @@
 - M5：`check-agent-pane-contract .` 与 `--self-test` 通过；newSession、subscribe均齐全。真实 Desktop 面板行为未验证。
 - M6：`node scripts/check-install.mjs` 未找到 DSH Desktop `io.dsh.desktop`；未装入其它Harness，Desktop安装/退出重开/业务走查均未验证。
 - M7/M8：仅本仓草稿；不打tag、不发Release、不改组织 BACKLOG，见 `docs/release-draft/M7-M8-草稿.md`。
-- M9：npm run check / npm test / 五项门禁尚未执行；须待前置里程碑与M2范围收口后执行。
 - 下一步：用户审核并确认原型版本/hash及实现范围；独立设计审查仍待执行。并行需要恢复可信M4 SQLite/状态原件，不能改哈希凑绿。
 - 阻塞：M2 用户确认与独立审查；M4 SQLite 缺件；M6 Desktop 未安装。此记录不代表 M2–M9 已完成。
 
@@ -43,7 +42,14 @@
 - `npm test`：12/12 通过。
 - `npm run audit` 与 `dsh-wb-cli audit .`：39/39 通过；只表示仓库结构审计。
 - `npm run pack:check`：dry-run 通过，但包仍为 0.1.1（33 files/3.0 MB），不是 0.2.0 候选交付。
-- ``npm run check`：退出 1；已将 `check-probe-coverage` 扩展为识别 `navItems` 并补全本病种全路由探针；当前唯一已观察阻断为试验快照 SQLite 缺失。
+- `npm run check`：退出 1；已将 `check-probe-coverage` 扩展为识别 `navItems` 并补全本病种全路由探针；当前唯一已观察阻断为试验快照 SQLite 缺失。
 - 单独 `check-trial-snapshot`：退出 1；M4 SQLite 缺失。单独 `check-ui-parity`：退出 1；生产 `public/` 尚未生成（原型未确认，不生成正式构建）。
-- M2 浏览器探针 20/20；`check-install` 未找到 DSH Desktop。P1–P9/E0 primer probe 10/10，self-test 注入三缺陷后按预期拦截；`check-primer-links --http` 12/12。
+- M2 浏览器探针最终 20/20；首次复跑发现隐式 favicon 404 后加入内嵌 favicon 并重跑通过。原型 HTML hash 更新见 `docs/PROTOTYPE-REVIEW.md`；此前发送的 hash 审核请求需以本次 HTML hash 为准。`check-install` 未找到 DSH Desktop。P1–P9/E0 primer probe 10/10，self-test 注入三缺陷后按预期拦截；`check-primer-links --http` 12/12。
 - 五项/全部交付门禁未全绿，M9 未完成。
+
+## 2026-11-17 复核更新（M3/M5 与门禁）
+
+- M3 收口复核：`node scripts/check-schema-words.mjs .` 通过，0001/0002 与 freeze hash 一致；本轮未更改迁移。
+- M5 面板契约复扫：`node scripts/check-agent-pane-contract.mjs .` 与 `--self-test` 通过；`newSession`、`subscribe` 均在合同链路，真实宿主 V3 仍未验证。
+- M9 更新：本轮 `npm test` 12/12、`npm run audit` 39/39、`npm run pack:check` dry-run 通过（包仍为 0.1.1）；`npm run check` 退出 1，失败于缺失 M4 SQLite 快照。`check-ui-parity` 仍因生产 `public/` 未生成而失败；M2 用户确认前不生成生产构建。
+- 当前阻塞：M2 的 G2 原型确认/独立审查、M4 原始 SQLite 快照、M6 DSH Desktop。最终版本 0.2.0 尚未切换或打包；五项门禁未全绿，M9 未完成。

@@ -4,15 +4,15 @@
 
 - HTML实际路径：`prototypes/v0.2/index.html`
 - 原型版本：v0.2.0（展示目标版本；业务包当前仍为 0.1.1）
-- HTML SHA-256：`c729e35cb29eb1da975c69da97f45d301bb5a0f618dce6ffaabfddae8a598580`
+- HTML SHA-256：`1b7739308f93af0f1a846a4bc5a24e77f5649254ebc761d9620a249736db05f3`
 - 配套文件 SHA-256：`app.js 7f002ebeaa5cddb252095d8482cab32fbb551952fd6a80700d9d30d071c4724f`；`style.css 57fff79d321dcdd88fae58ef2f534a944cc0ba270fc21d3e48c8edeefa5e6e67`；`demo-data.js 9d9667100c79bcdac7f45d804f351d3fe72afa78cd5861541f6e38d2ff9c1ef5`；`primer-data.js 0e739f979b5fed2158afe061e667a5a3a7407d121b6fd30bab509577c9fc739d`；`primer.js 3199249e3afb9d541c2bf88ac1a93f138fecf81b21fc9d002324b58005a79b6c`；`primer.css 7acac71973eac8c311e9b311b00de0ae9d40d2d1150f95b6ece8795b4a264deb`
 - SPEC/场景：`docs/SPEC.md`、`docs/SCENARIOS.md`、`docs/PATIENT-FLOW.md`；两套档案均为合成资料。
-- 预览：2026-11-17，系统 Chromium，`file://` 直接打开，视口截图约 913×656；实际查看首页、疾病概要整页、标志物页、趋势图、事件泳道及固定高度指标卡。不是 DSH Desktop 验收。
+- 预览：2026-11-17，系统 Chromium，`file://` 直接打开，视口截图约 913×656；实际查看首页、疾病概要整页、标志物页、趋势图、事件泳道及固定高度指标卡。独立 HTTP 浏览器探针 20/20（含九路由、图表/事件/视窗、键盘来源、窄屏、稀疏/空态、无浏览器错误）。不是 DSH Desktop 验收。
 - 浏览器实测内容：双档案切换入口、九个业务导航、疾病概要入口和整页返回/关闭、趋势页、独立事件泳道、三张固定高度指标卡均渲染。疾病概要 P1–P9/E0 探针 10/10；`--self-test` 预期3项失败、自测通过；一图秀交互探针记录见 ONE-CHART-SPEC；未完成所有场景/读屏审查。
 - 数据边界：A/B 两档、化验、节点、事件及笔记全为合成数据；交互会话内改动刷新后复原；Agent 面板为宿主模拟，不创建/订阅真实会话、不发送内容；临床研究快照235条不是相关性审核后的睾丸癌试验数；原SQLite缺失。
 - 版本号首屏可见 `v0.2.0`；`VERSION` 与生产包仍为 `0.1.1`，在 M9 统一前不得称版本一致。
 - 一图秀：临时 Chromium DOM/交互探针部分覆盖C1–C12；细节/缺口见 `docs/ONE-CHART-SPEC.md`，G2仍未签认。
-- 用户反馈/确认：尚无。确认人、日期、确认范围均待填写。配套文件 hash 与 HTML hash共同界定当前版本。
+- 原型 HEAD 另含内嵌 favicon 修订，避免浏览器隐式请求触发 404；据此更新 HTML hash。用户反馈/确认：尚无。确认人、日期、确认范围均待填写。配套文件 hash 与 HTML hash共同界定当前版本。
 
 | 模块/功能ID | 对应HTML/行为 | 实际走查证据 | 用户明确确认依据/人/日期 | 未确认项 | 允许实施的范围 |
 | --- | --- | --- | --- | --- | --- |
