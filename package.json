@@ -1,6 +1,6 @@
 {
   "name": "@xyb-community/testicular-workbench",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "本机优先的睾丸癌（生殖细胞肿瘤）术后标志物、监测节点、生育力保存与就诊准备记录工作台",
   "private": true,
   "type": "module",

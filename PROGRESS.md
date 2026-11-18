@@ -99,3 +99,12 @@
 - 本轮 `npm run check` 发现试验链闸门要求研究数据产品必须有“建档→检索→匹配→呈现/收藏”，而已获用户确认的 P8 原型仅展示来源和通道状态，且宽词返回未逐条审核，不能据此虚构个体匹配功能。
 - 在 `research/testicular/manifest.json` 如实补 `trimmed: true` 和实测 `snapshot.records=9/date=2026-11-18`，指明研究快照仍保留、生产检索/匹配/收藏不在确认范围。没有修改 JSONL/SQLite 或其哈希。
 - 复跑 `node scripts/check-trial-snapshot.mjs .`：`records=9/9 sourceStatuses=24`、`PASS snapshot consistency: 1 snapshot(s)`；`node scripts/check-trial-chain.mjs .`：`✓ 临床试验闸门通过`。
+
+## 2026-11-18 M6 完成 / M9 门禁实测
+
+- 版本四处为 `0.2.0`（`VERSION`、`package.json`、`lib/version.js`、生产 HTML 注入占位）；品牌仍是待追认占位「小勇宝 TestiPal」。
+- 最终 tgz：`@xyb-community/testicular-workbench@0.2.0`，40 files，3.0 MB（unpacked 3.4 MB），SHA-256 `cd539be18076fbcd2b26c4773f18b1279b0f024a26dab5d4c2b792cceb564610`。
+- 取最终 tgz 解包至临时测试 profile，用 starter rc.56 `scripts/check-profile.mjs --profile /tmp/testi-profile-final-vqGApH --only testicular` 扫描：`通过 1/1`；bundle、dependency、public/ 均在包内且登记。该副本扫描不是 DSH Desktop 安装。
+- `node scripts/check-install.mjs` exit 1：sam 未找到 `io.dsh.desktop`。实机 profile 安装、退出重开、UI 点击均未验证。
+- M9 预检曾发现临床试验链不符合 P8 实际范围；按确认原型收敛成快照保留、产品检索/匹配裁剪并记录真实快照数字，不更改 SQLite/JSONL/hash。`npm run check` 随后 exit 0。
+- 本轮 M9 五项门禁：`npm run check` exit 0（含测试 12/12）；独立 `npm test` 12/12；`npm run audit` 40/40；最终 `npm pack` 40 files；starter 测试 profile 1/1。测试用例与结论见 `docs/TEST-CASES.md`。

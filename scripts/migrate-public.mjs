@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 const ROOT=dirname(dirname(fileURLToPath(import.meta.url)));
 const SRC=join(ROOT,'prototypes/v0.2'), OUT=join(ROOT,'public');
 export const FILES=['index.html','app.js','style.css','demo-data.js','primer-data.js','primer.js','primer.css',...(existsSync(join(SRC,'trial-match.js'))?['trial-match.js']:[])];
-const BOOT=`<script>window.__TESTI_PRODUCTION__=true;window.__TESTI_API_BASE__="__API_BASE__";</script>`;
+const BOOT=`<script>window.TESTI_PRODUCTION=true;window.TESTI_API_BASE="__API_BASE__";</script>`;
 export function expected(name){let s=readFileSync(join(SRC,name),'utf8');if(name==='index.html')s=s.replaceAll('v0.2.0','__VERSION_DISPLAY__').replace('</head>',`${BOOT}\n<style>html,body,#shell,.shell,.frame{height:100%;min-height:0}body{overflow:hidden}.dsh-embedded .topbar,.dsh-embedded .sidebar .profile-switch,.dsh-embedded .agent-pane,.dsh-embedded #agent-splitter,.dsh-embedded [data-action="agent"]{display:none!important}.dsh-embedded .frame{height:100vh}.dsh-embedded #main{min-height:0}</style>\n</head>`);return s}
 export { SRC, OUT };
 const check=process.argv.includes('--check');
