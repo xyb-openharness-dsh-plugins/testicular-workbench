@@ -7,6 +7,7 @@
 - 脚本：`scripts/fetch-testicular-trials-2026.mjs`，通过 `unified-trial-mcp@0.3.1` 的 MCP stdio 通道取数；没有自行拼接上游 URL。
 - 本次取数日期：2026-11-18；四个查询词（睾丸癌 / testicular cancer / testicular neoplasms / 生殖细胞肿瘤）返回 9 条，合并前 9 条。只有 chinadrugtrials 返回记录（9 条）；其余来源逐词条终态见 `manifest.json` 与 SQLite `source_statuses`。
 - 9 条是宽词检索返回记录，未逐条审核与睾丸癌的相关性；不能写成经审核的睾丸癌研究数或覆盖度。登记状态一律“未核实”；获取成功不代表内容已核实。
+- 产品范围（与用户确认的 P8 原型一致）：保留 M4 研究快照用于审查与追溯；工作台页仅呈现来源/通道状态，不提供在线检索、个体匹配、收藏或适配建议。manifest 的 `trimmed: true` 与 `snapshot.records/date` 标注的是产品检索/匹配线的裁剪和实测依据，不改动 JSONL/SQLite 内容或文件哈希。
 - 用户 2026-11-18 确认：原 SQLite 未入仓且已不可恢复，授权使用仓内既有取数脚本重跑。当前 SQLite/JSONL 与 manifest 哈希按新产物重新计算登记；这是获授权的新快照，不是修改哈希凑绿。
 - 交付物：`research/testicular/{manifest.json,trials-2026.jsonl,testicular_trials_2026.sqlite}`。`node scripts/check-trial-snapshot.mjs .` 与 `node scripts/check-trial-chain.mjs .` 均通过。来源状态详见 manifest 中按查询词列出的 `queryResults` 与 SQLite `source_statuses`。
 - 快照会过期（manifest 记录来源状态）；入排标准不在快照内，详情浮窗固定写“本机快照只存登记的结构化字段，入排标准请到官方登记页核对”。
@@ -41,6 +42,6 @@
 
 ## §五 M4 复核补记（2026-11-18）
 
-- 用户授权重跑后生成 9 条 JSONL / 9 条 SQLite 记录、24 行来源终态；新文件 SHA-256 见 manifest。`check-trial-snapshot` 输出 `records=9/9 sourceStatuses=24` 并 `PASS snapshot consistency: 1 snapshot(s)`；`check-trial-chain` 输出 `✓ 临床试验闸门通过`。
+- 用户授权重跑后生成 9 条 JSONL / 9 条 SQLite 记录、24 行来源终态；新文件 SHA-256 见 manifest。`check-trial-snapshot` 输出 `records=9/9 sourceStatuses=24` 并 `PASS snapshot consistency: 1 snapshot(s)`；`check-trial-chain` 按 manifest 的 trimmed + 实测快照分支检查；原型确认的产品面没有检索/匹配链路。
 - 仅 chinadrugtrials 对“睾丸癌”查询返回 9 条；其余通道失败或未配置，细节按查询词记录于 manifest。此检索不是全库完整检索。
 - 9 条均为宽词检索返回记录，尚未逐条审核相关性，不可称为睾丸癌相关研究数。原 235 条同样是未审核的宽词检索数；旧快照缺失后已按用户授权生成新快照，未沿用旧记录或旧哈希。

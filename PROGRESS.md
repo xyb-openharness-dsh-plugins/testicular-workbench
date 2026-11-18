@@ -93,3 +93,9 @@
 - 临时 profile 浏览器/API 冒烟：连接 2 个档案；化验写入后读回 3.3；私密笔记回读标记为 private，导出结果未含私密行；浏览器错误 0。
 - `npm test` 12/12。独立 M5 证据、限制和 Desktop 未验证项见 `docs/MILESTONE-EVIDENCE.md`。
 - 下一步：升至 0.2.0、最终 pack 和 starter 测试 profile 静态检查；Desktop 未安装，实机行为继续标未验证。
+
+## 2026-11-18 M4 范围元数据补记
+
+- 本轮 `npm run check` 发现试验链闸门要求研究数据产品必须有“建档→检索→匹配→呈现/收藏”，而已获用户确认的 P8 原型仅展示来源和通道状态，且宽词返回未逐条审核，不能据此虚构个体匹配功能。
+- 在 `research/testicular/manifest.json` 如实补 `trimmed: true` 和实测 `snapshot.records=9/date=2026-11-18`，指明研究快照仍保留、生产检索/匹配/收藏不在确认范围。没有修改 JSONL/SQLite 或其哈希。
+- 复跑 `node scripts/check-trial-snapshot.mjs .`：`records=9/9 sourceStatuses=24`、`PASS snapshot consistency: 1 snapshot(s)`；`node scripts/check-trial-chain.mjs .`：`✓ 临床试验闸门通过`。
