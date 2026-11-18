@@ -59,3 +59,10 @@
 - M2：用户确认原型 HTML SHA-256 `1b7739308f93af0f1a846a4bc5a24e77f5649254ebc761d9620a249736db05f3` 及 `docs/PROTOTYPE-REVIEW.md` 所列范围进入生产；原型级独立审查已记录到 `docs/MILESTONE-EVIDENCE.md`。
 - M4：用户授权用既有脚本重跑；2026-11-18 新快照为 9 条宽词检索记录（相关性未逐条审核）、24 行来源状态。新 SQLite / JSONL / manifest 已通过 `check-trial-snapshot` 与 `check-trial-chain`，用户授权和新 hash 口径均见 `docs/CLINICAL-DATA.md`。
 - 下一步：生产构建及 parity，M6 产包/测试 profile 检查，M9 五项门禁与用例证据。DSH Desktop 实机状态按未验证记录。
+
+## 2026-11-18 M2 G2 收口
+
+- 用户 2026-11-18 确认原型 HTML SHA-256 `1b7739308f93af0f1a846a4bc5a24e77f5649254ebc761d9620a249736db05f3` 及 PROTOTYPE-REVIEW 所列 P0–P9、Agent Pane 全范围进入生产实现。
+- 独立设计审查逐项结果已记入 `docs/PROTOTYPE-REVIEW.md`。发现旧快照日期/数量过期和密集末值标签碰撞，已做最小修订；HTML hash 未变。修订后浏览器探针通过，dense labels 3 个（y=68/82/96）。
+- 新建 `docs/MILESTONE-EVIDENCE.md`，既有 M0/M1/M3/M5 仅据 git log 与 DAY-REPORT-2 回填；M4 引用本轮新快照证据。
+- 当前里程碑：M5 production UI 接入及 parity；随后 M6/M9。Desktop 实机状态仍未验证。

@@ -1,0 +1,22 @@
+# 里程碑证据表（MILESTONE-EVIDENCE）
+
+> 依据 starter rc.56 模板。未跑/未取得/未安装的事项如实标明；DAY-REPORT 完成结论必须回指本表。
+
+| 里程碑 | 交付物（文件/提交号） | 验证命令 | 关键输出（原文摘录：数字/退出码） | 未验证项及原因 |
+|---|---|---|---|---|
+| M0 | 回填：`b664ded`、`8330ea5`；`docs/SPEC.md`、`docs/DEV-REQUIREMENTS.md`、`schema/0001_initial.sql`、`schema/0002_app_setting.sql`、`docs/CLINICAL-DATA.md` | 回填自 `git log`、`PROGRESS.md`、`DAY-REPORT-2.md` | 回填：`npm run check` exit 0、`npm test` 9/9、临床试验快照最初检索 235 条（非相关性审核数），详见既有日结 | 原始 235 条 SQLite 不在仓且无法恢复；不以历史数字代替新快照 |
+| M1 | 回填：`30d12ed`；`docs/DIFF-MATRIX.md`、`docs/USER-RESEARCH.md`、`docs/signoffs/G1-自动签认.md` | 回填自 `PROGRESS.md`、`DAY-REPORT-2.md` | 回填：重名率 16.7%（1.5/9）；访谈 0；G1 七项自动检查通过，晨审追认状态按原文保留 | 人工晨审追认未在本轮重做/核实 |
+| M2 | `prototypes/v0.2/`、`docs/PROTOTYPE-REVIEW.md`；确认基准 HTML SHA-256 `1b7739308f93af0f1a846a4bc5a24e77f5649254ebc761d9620a249736db05f3`；后续最小修订 `app.js`、`demo-data.js` | `sha256sum prototypes/v0.2/index.html`；`NODE_PATH=/tmp/testi-browser-deps/node_modules CHROME_PATH=/usr/bin/chromium node scripts/probe-testicular-m2.mjs --url file:///data/home/dev/testicular-workbench/prototypes/v0.2/index.html` | 哈希原文为用户指定值；探针：9 routes；曲线高度 `145/145/145`；profile B `10→3`；窄屏 `9/9`；dense labels `3 labels; y=68/82/96`；`no browser errors`；退出码 0。用户 2026-11-18 确认 P0–P9 与 Agent Pane 全范围进入生产。独立审查逐项见 PROTOTYPE-REVIEW.md | 完整读屏、MT05/06/10/11、MT14 压力数据未验证；不影响已确认的实现授权，但不得标测试通过。ego-browser 命令在 sam 不可用，本次使用系统 Chromium 与 Puppeteer 探针 |
+| M3 | 回填：`9b80e5a`；schema 0001/0002、freeze contract | 回填自 `PROGRESS.md`、`DAY-REPORT-2.md`；本轮不改迁移 | 回填：`node scripts/check-schema-words.mjs .` 通过；0001/0002 与 freeze hash 一致 | 本轮仅沿用回填证据，未重做迁移检查 |
+| M4 | `32a2866`（已推送）；`research/testicular/{manifest.json,trials-2026.jsonl,testicular_trials_2026.sqlite}`；`scripts/fetch-testicular-trials-2026.mjs` | 用户授权后 `UNIFIED_TRIAL_CLI=/tmp/testi-trials-mcp/node_modules/unified-trial-mcp/dist/src/cli/main.js node scripts/fetch-testicular-trials-2026.mjs`；`node scripts/check-trial-snapshot.mjs .`；`node scripts/check-trial-chain.mjs .` | `完成：9 条（合并前 9 条）bySource={"chinadrugtrials":9}`；`CHECK ... records=9/9 sourceStatuses=24`；`PASS snapshot consistency: 1 snapshot(s)`；`✓ 临床试验闸门通过`；检查退出码均为 0。manifest 登记新文件 SHA-256；用户 2026-11-18 确认授权重跑 | 9 条是宽词返回，相关性未逐条审核；其他来源失败/未配置，覆盖不完整；不得将 9 写成已审核睾丸癌研究数 |
+| M5 | 回填：`9b80e5a`、`01da0b9`；`src/client.js`、`dsh/`、`lib/` | 回填自 `PROGRESS.md`、`DAY-REPORT-2.md` | 回填：`check-agent-pane-contract .` 与 `--self-test` 通过；newSession、subscribe 静态链路齐全 | 本轮稍后接入正式 iframe；Desktop 会话与窗口行为未验证 |
+| M6 | 待本轮完成 | 待运行 | 未验证 | DSH Desktop 未安装；按用户要求仅做 sam 可及的测试 profile 静态安装核验 |
+| M7 | 本轮不执行 | 不适用 | 不发 Release、不打 tag | 按用户明确范围排除 |
+| M8 | 本轮不执行 | 不适用 | 不改组织 BACKLOG | 按用户明确范围排除 |
+| M9 | 待本轮完成 | `npm run check`、`npm test`、`npm run audit`、`npm pack`、测试 profile 核验 | 待实测 | 若 M4 之外仍有失败会如实报告；Desktop 实机走查不属于可验证环境 |
+
+## 证据自检
+
+- 既往 M0/M1/M3/M5 标为“回填”，仅引用仓内提交、PROGRESS 与 DAY-REPORT-2，未伪装本轮重跑。
+- M4 是用户授权的新快照；manifest 与实际 JSONL/SQLite 哈希对应，不改旧 hash 凑绿。
+- 所有生产实现和发布门禁待实际完成后补记命令原文、退出码与未验证项。

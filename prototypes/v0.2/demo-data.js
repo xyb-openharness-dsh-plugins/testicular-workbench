@@ -130,7 +130,7 @@ window.TESTI_DEMO = {
           "id": "demo-a-event-1"
         }
       ],
-      "studyCount": 235
+      "studyCount": 9
     },
     {
       "id": "demo-b",
@@ -306,19 +306,20 @@ window.TESTI_DEMO = {
           "id": "demo-b-event-2"
         }
       ],
-      "studyCount": 235
+      "studyCount": 9
     }
   ],
   "sources": {
     "trials": "research/testicular/manifest.json",
-    "snapshotDate": "2026-11-14",
-    "snapshotCount": 235,
+    "snapshotDate": "2026-11-18",
+    "snapshotCount": 9,
     "channelStates": {
-      "chinadrugtrials": "9 条",
-      "ctv": "7 条",
-      "ictrp": "219 条",
-      "chictr_online": "FAILED",
-      "ictrp 中文词条": "FAILED"
+      "chinadrugtrials": "睾丸癌词条 9 条；其他3词 NO_RESULTS",
+      "ctv": "FAILED（4词）",
+      "ictrp": "FAILED（4词）",
+      "chictr_online": "FAILED（4词）",
+      "chictr_pancreatic_archive": "NEEDS_SETUP（4词；仅胰腺癌语料）",
+      "xyb_chinadrugtrials_archive": "NEEDS_SETUP（4词）"
     }
   }
 };

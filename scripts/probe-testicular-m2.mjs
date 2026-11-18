@@ -63,6 +63,20 @@ try{
  await sparse.evaluate(()=>document.querySelector('[data-range="全部"]').click())
  const one=await sparse.evaluate(()=>({points:document.querySelectorAll('[data-point]').length,lines:document.querySelectorAll('.chart-line').length}))
  check('single point and empty-window states',empty&&one.points===1&&one.lines===0,`empty=${empty}; points=${one.points}; lines=${one.lines}`)
+ const dense=await browser.newPage({viewport:{width:1280,height:860}})
+ await dense.goto(url,{waitUntil:'networkidle0'})
+ await dense.evaluate(()=>{
+   const p=window.TESTI_DEMO.profiles[0], keys=['AFP','β-hCG','LDH']
+   p.labs=keys.flatMap((key)=>{
+     const base=p.labs.find(x=>x.key===key)
+     return [0,100].map((value,i)=>({...base,id:`dense-${key}-${i}`,date:i?'2026-11-16':'2026-10-16',value}))
+   })
+   document.querySelector('#nav [data-nav="labs"]').click()
+ })
+ const denseLabels=await dense.$$eval('.last-value',xs=>xs.map(x=>{const r=x.getBBox();return {x:r.x,y:r.y,width:r.width,height:r.height}}))
+ const noLabelOverlap=denseLabels.length===3&&denseLabels.every((a,i)=>denseLabels.slice(i+1).every(b=>a.x+a.width<=b.x||b.x+b.width<=a.x||a.y+a.height<=b.y||b.y+b.height<=a.y))
+ check('dense end labels remain distinct',noLabelOverlap,`${denseLabels.length} labels; y=${denseLabels.map(x=>Math.round(x.y)).join('/')}`)
+ await dense.close()
  await sparse.close()
  check('no browser errors',errors.length===0,errors.join(' | '))
 } finally {await browser.close()}

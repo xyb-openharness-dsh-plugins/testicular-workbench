@@ -1,12 +1,12 @@
 id,原型版本与定位,原型内容或行为,当前实现,差异,偏离原因及依据,替代方案,组件与API,验收证据,状态
-P0,v0.2.0/dashboard,双合成档案/患者近期事项,HTML模拟,未用户确认且非生产接通,用于交互评审,确认后映射读模型,待定,Chromium file://首屏预览,候审
-P1,v0.2.0/? primer,疾病概要四段整页/独立返回关闭,HTML+官方primer模块,探针未完成,指南原件未取得据二次来源,确认后连接既有模块,assets/patterns/disease-primer.js,链接门禁9项通过其余未测,候审
-P2,v0.2.0/labs,趋势/事件泳道/指标翻面/最近报告,HTML模拟,一图秀C1-C12未签认且部分合同缺失,不得据此删减,按ONE-CHART-SPEC补全,待定,Chromium可见趋势/事件/卡片,候审
-P3,v0.2.0/followup,监测节点与影像记录,HTML模拟,无用户走查,无,无,待定,未验证,候审
-P4,v0.2.0/course,治疗经过与医生原话,HTML模拟,无用户走查,无,无,待定,未验证,候审
-P5,v0.2.0/fertility,个人生育力记录和问题,HTML模拟,无用户走查,无,无,待定,未验证,候审
-P6,v0.2.0/notes,私密笔记/排除导出草稿,HTML模拟,无数据层隔离,模拟数据明确,后端须再次做隐私过滤,待定,未验证,候审
-P7,v0.2.0/visit,问题清单与JSON下载,HTML模拟真实下载,无用户走查,数据刷新即复原,生产接入后验收,待定,源代码已实现下载未手工验,候审
-P8,v0.2.0/trials,快照来源和失败状态,HTML展示,sqlite文件缺失且相关性未核,不可把235说成病种计数,恢复一致快照并逐条复核,待定,试验链通过/快照一致性失败,候审
-P9,v0.2.0/records,资料来源/状态,HTML模拟,未接文件/存储,原型范围,确认后定领域对象,待定,未验证,候审
-P10,v0.2.0/Agent Pane,主工作区+右侧宿主模拟,HTML/生产静态契约,真实Desktop未验证,宿主容器不是假聊天,保持原生面板契约,src/client.js,newSession+subscribe静态门禁通过,未装机验证
+P0,v0.2.0/dashboard,双合成档案/患者近期事项,HTML模拟,用户确认；production读模型接入待验,用于交互实现合同,确认后映射读模型,待接入,Chromium file://首屏预览,已确认；生产映射待验
+P1,v0.2.0/? primer,疾病概要四段整页/独立返回关闭,HTML+官方primer模块,用户确认；production接入待验,指南原件未取得据二次来源,连接既有模块,assets/patterns/disease-primer.js,既有链接门禁证据回填,已确认；生产映射待验
+P2,v0.2.0/labs,趋势/事件泳道/指标翻面/最近报告,HTML模拟,密集标签已修；读屏与压力数据未验证,不得据此删减,按ONE-CHART-SPEC实现,待接入,Chromium探针：145/145/145；dense labels y=68/82/96,已确认；生产映射待验
+P3,v0.2.0/followup,监测节点与影像记录,HTML模拟,业务写入待接入,原型确认范围,接入monitoring_nodes/imaging_records,待接入,未验证,已确认；生产实现待验
+P4,v0.2.0/course,治疗经过与医生原话,HTML模拟,业务写入待接入,原型确认范围,接入course_events/doctor_quotes,待接入,未验证,已确认；生产实现待验
+P5,v0.2.0/fertility,个人生育力记录和问题,HTML模拟,业务写入待接入,原型确认范围,接入fertility_records/visit_questions,待接入,未验证,已确认；生产实现待验
+P6,v0.2.0/notes,私密笔记/排除导出草稿,HTML模拟,业务写入和服务端私密过滤待验证,私密记录须服务端过滤,接notes及export API,待接入,未验证,已确认；生产实现待验
+P7,v0.2.0/visit,问题清单与JSON下载,HTML模拟真实下载,问题持久化/真实导出待接入,刷新后演示复原,接visit_questions/export API,待接入,未验证,已确认；生产实现待验
+P8,v0.2.0/trials,快照来源和失败状态,HTML与manifest口径同步,9条宽词返回；相关性未逐条审核,不得将9写作已审核疾病研究数,展示manifest日期/count/status,check-trial-snapshot 与 chain 通过,用户确认；生产映射待验
+P9,v0.2.0/records,资料来源/状态,HTML模拟,原件读写未接入,原型明确不读取用户文件,展示来源与未接入状态,待接入,未验证,已确认；生产实现待验
+P10,v0.2.0/Agent Pane,主工作区+右侧宿主模拟,HTML/生产静态契约,用户确认范围；生产集成与真实Desktop未验证,宿主容器不是假聊天,按原生面板合同接入,src/client.js,newSession+subscribe静态门禁证据回填,已确认；真实 Desktop 未验证
