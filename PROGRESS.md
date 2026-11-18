@@ -104,7 +104,15 @@
 
 - 版本四处为 `0.2.0`（`VERSION`、`package.json`、`lib/version.js`、生产 HTML 注入占位）；品牌仍是待追认占位「小勇宝 TestiPal」。
 - 最终 tgz：`@xyb-community/testicular-workbench@0.2.0`，40 files，3.0 MB（unpacked 3.4 MB），SHA-256 `cd539be18076fbcd2b26c4773f18b1279b0f024a26dab5d4c2b792cceb564610`。
-- 取最终 tgz 解包至临时测试 profile，用 starter rc.56 `scripts/check-profile.mjs --profile /tmp/testi-profile-final-vqGApH --only testicular` 扫描：`通过 1/1`；bundle、dependency、public/ 均在包内且登记。该副本扫描不是 DSH Desktop 安装。
+- 取最终 tgz 解包至临时测试 profile，用 starter rc.56 `scripts/check-profile.mjs --profile /tmp/testi-profile-m9-NyEbDC --only testicular` 扫描：`通过 1/1`；bundle、dependency、public/ 均在包内且登记。该副本扫描不是 DSH Desktop 安装。
 - `node scripts/check-install.mjs` exit 1：sam 未找到 `io.dsh.desktop`。实机 profile 安装、退出重开、UI 点击均未验证。
 - M9 预检曾发现临床试验链不符合 P8 实际范围；按确认原型收敛成快照保留、产品检索/匹配裁剪并记录真实快照数字，不更改 SQLite/JSONL/hash。`npm run check` 随后 exit 0。
 - 本轮 M9 五项门禁：`npm run check` exit 0（含测试 12/12）；独立 `npm test` 12/12；`npm run audit` 40/40；最终 `npm pack` 40 files；starter 测试 profile 1/1。测试用例与结论见 `docs/TEST-CASES.md`。
+
+## 2026-11-18 M9 完成
+
+- 当前 HEAD 全量复核：`npm run check` exit 0（含 12/12）；独立 `npm test` exit 0（12/12）；`npm run audit` 与 `dsh-wb-cli audit /data/home/dev/testicular-workbench` 均 exit 0（40/40）；最终 `npm pack` exit 0（40 files、3.0 MB）；从同一 SHA-256 的最终包解包构造测试 profile 后 starter `check-profile` 1/1。
+- 两个最高价值真实场景在 `docs/TEST-CASES.md` 均为“应该/现实一致”：私密笔记不进入真实下载 JSON；宿主切到档案 B 后看板整页读取 B 记录。
+- M2 G2 确认、M4 快照授权重跑、M5 production parity、M6 测试 profile 各项证据见 `docs/MILESTONE-EVIDENCE.md`；独立 P8 试验线范围审查见 `docs/PROTOTYPE-REVIEW.md`。
+- `node scripts/check-install.mjs` exit 1，未发现 DSH Desktop `io.dsh.desktop`；真实 Desktop profile 安装、退出重开、点击走查统一记为未验证。未发布 Release、未打 tag、未改组织 BACKLOG。
+- 收尾工作目录报告：`~/dev/testicular-run/DAY-REPORT.md`；仓库副本：`DAY-REPORT-3.md`。

@@ -11,12 +11,12 @@
 | M6 | pack/测试profile扫描 | M2–M5、版本冻结 | 0.2.0 tgz、pack 解压副本 + starter `check-profile.mjs` 静态扫 | 40 files/3.0 MB；SHA-256 `cd539be18076fbcd2b26c4773f18b1279b0f024a26dab5d4c2b792cceb564610`；profile `通过 1/1` | 测试 profile 静态扫描完成；Desktop 实机安装/退出重开/点击走查未验证 |
 | M7 | 发布准备 | M6 | 只准备草稿；本任务不打tag、不发Release | `docs/release-draft/M7-M8-草稿.md` | 草稿 |
 | M8 | BACKLOG回填 | 发布授权 | 本任务不改组织仓 | 仅本仓草稿 | 不执行 |
-| M9 | 全量门禁 | M2–M6 | npm run check、npm test、npm run audit、最终 npm pack、测试 profile 静态扫描、≤2真实场景 | `npm run check` exit 0；`npm test` 12/12；audit 40/40；pack 40 files；profile 1/1；2 个场景一致，见 TEST-CASES / MILESTONE-EVIDENCE | 五项门禁/两条场景通过；报告提交待完成；Desktop UI 未验证 |
+| M9 | 全量门禁 | M2–M6 | npm run check、npm test、npm run audit、最终 npm pack、测试 profile 静态扫描、≤2真实场景 | `npm run check` exit 0；`npm test` 12/12；audit 40/40；pack 40 files；profile 1/1；2 个场景一致，见 TEST-CASES / MILESTONE-EVIDENCE | M9 完成；五项门禁/两条场景通过；Desktop UI 未验证 |
 
 ## 交接
 
 - 当前：M5/M6 完成；五项 M9 门禁和两条测试用例通过。完整读屏、图表压力项与 Desktop 实机仍未验证。
-- 下一步：把全量证据和 DAY-REPORT-3 推送，生成工作目录终版报告。
+- 收口：DAY-REPORT-3 与工作目录终版报告记录本次结果。
 - 已确认授权：Git commit/push 每里程碑；不发布、不打tag、不改组织 BACKLOG；所有Desktop实机状态均未验证。
 
 - 2026-11-18：M2 已获用户确认并经独立审查；M4 已按授权重跑并推送。逐项证据见 `docs/MILESTONE-EVIDENCE.md`。
