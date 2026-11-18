@@ -1,8 +1,8 @@
 /* M2 standalone interaction prototype. All data comes from demo-data.js and is synthetic. */
 (() => {
   const data = window.TESTI_DEMO;
-  const productionMode = window.__TESTI_PRODUCTION__ === true && location.protocol !== 'file:';
-  const apiBase = window.__TESTI_API_BASE__ || '';
+  const productionMode = window.TESTI_PRODUCTION === true && location.protocol !== 'file:';
+  const apiBase = window.TESTI_API_BASE || '';
   let liveReady = false, liveError = '';
   const navItems = [
     ['dashboard','⌂','看板','概览'],['labs','⌁','标志物与化验','记录与趋势'],['followup','◷','监测节点','节点清单'],
