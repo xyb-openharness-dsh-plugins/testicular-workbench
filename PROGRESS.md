@@ -2,7 +2,7 @@
 
 > 最新进展看本文件**尾部**更新，头部「当前里程碑」可能过期。
 
-- 当前里程碑：M2（v0.2.0 HTML 原型候审；G2 未签）
+- 当前里程碑：M2 已由用户确认并经独立审查；当前从 M4 快照与生产构建继续（目标 0.2.0）
 - 认领依据：issue https://github.com/xyb-openharness-dsh-plugins/.github/issues/80（/claim 已评论，2026-11-14 23:12）
 - 模式：无人值守夜班（2026-11-14 23:00 → 2026-11-15 08:00），晨审追认
 - 已完成：BACKLOG 快照落盘（night-20261114-work/BACKLOG-snapshot-20261114.md）；issue #80 提交并 /claim；私有仓 testicular-workbench 创建并 clone；starter 1.10.0-rc.53 init 完成（config：night-20261114-work/tc-config.json）
@@ -53,3 +53,9 @@
 - M5 面板契约复扫：`node scripts/check-agent-pane-contract.mjs .` 与 `--self-test` 通过；`newSession`、`subscribe` 均在合同链路，真实宿主 V3 仍未验证。
 - M9 更新：本轮 `npm test` 12/12、`npm run audit` 39/39、`npm run pack:check` dry-run 通过（包仍为 0.1.1）；`npm run check` 退出 1，失败于缺失 M4 SQLite 快照。`check-ui-parity` 仍因生产 `public/` 未生成而失败；M2 用户确认前不生成生产构建。
 - 当前阻塞：M2 的 G2 原型确认/独立审查、M4 原始 SQLite 快照、M6 DSH Desktop。最终版本 0.2.0 尚未切换或打包；五项门禁未全绿，M9 未完成。
+
+## 2026-11-18 续跑：M2 G2 与 M4 快照
+
+- M2：用户确认原型 HTML SHA-256 `1b7739308f93af0f1a846a4bc5a24e77f5649254ebc761d9620a249736db05f3` 及 `docs/PROTOTYPE-REVIEW.md` 所列范围进入生产；原型级独立审查已记录到 `docs/MILESTONE-EVIDENCE.md`。
+- M4：用户授权用既有脚本重跑；2026-11-18 新快照为 9 条宽词检索记录（相关性未逐条审核）、24 行来源状态。新 SQLite / JSONL / manifest 已通过 `check-trial-snapshot` 与 `check-trial-chain`，用户授权和新 hash 口径均见 `docs/CLINICAL-DATA.md`。
+- 下一步：生产构建及 parity，M6 产包/测试 profile 检查，M9 五项门禁与用例证据。DSH Desktop 实机状态按未验证记录。

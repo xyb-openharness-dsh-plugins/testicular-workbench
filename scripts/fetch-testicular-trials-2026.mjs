@@ -219,13 +219,23 @@ async function main() {
 
   const manifest = {
     topic: 'testicular', year: '2026', snapshotDate: SNAPSHOT_DATE,
-    tool: `unified-trial-mcp @ ${UTS_CLI}`,
+    tool: 'unified-trial-mcp@0.3.1（MCP stdio）',
     queries: QUERIES, perSourceLimit: PER_SOURCE_LIMIT,
     recordCount: lines.length, dbCount, sourceStatusRows: statusCount,
+    queryResults: perQuery.map((q) => ({
+      query: q.query,
+      statuses: q.statuses,
+      coverage: q.coverage ?? null,
+      completeness: q.completeness ?? null,
+      totalRecords: q.totalRecords ?? null,
+      error: q.error ?? null,
+    })),
     honesty: {
       offlineCorpora: 'ChiCTR/CDE/CTV 离线语料仅胰腺癌覆盖；睾丸癌只依赖在线通道终态，见 source_statuses 表',
       statusWording: '登记 ≠ 有效 ≠ 安全 ≠ 可入组；状态一律"登记状态，未核实"',
       mergeRule: '仅同一登记号（NCT/ChiCTR/CDE 等）合并，其余并排保留来源',
+      relevanceReview: '宽词检索返回记录；未逐条审核与睾丸癌的相关性，recordCount 不代表经审核的睾丸癌研究数或检索覆盖度',
+      rerunAuthorization: '用户 2026-11-18 确认授权重新取数；本次为新快照，不是修改既有哈希',
     },
     files: {},
   };

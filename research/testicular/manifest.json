@@ -1,8 +1,8 @@
 {
   "topic": "testicular",
   "year": "2026",
-  "snapshotDate": "2026-11-14",
-  "tool": "unified-trial-mcp @ /Users/qinxiaoqiang/Downloads/unified_search_trials/dist/src/cli/main.js",
+  "snapshotDate": "2026-11-18",
+  "tool": "unified-trial-mcp@0.3.1（MCP stdio）",
   "queries": [
     {
       "keyword": "睾丸癌",
@@ -22,20 +22,164 @@
     }
   ],
   "perSourceLimit": 200,
-  "recordCount": 235,
-  "dbCount": 235,
+  "recordCount": 9,
+  "dbCount": 9,
   "sourceStatusRows": 24,
   "honesty": {
     "offlineCorpora": "ChiCTR/CDE/CTV 离线语料仅胰腺癌覆盖；睾丸癌只依赖在线通道终态，见 source_statuses 表",
     "statusWording": "登记 ≠ 有效 ≠ 安全 ≠ 可入组；状态一律\"登记状态，未核实\"",
-    "mergeRule": "仅同一登记号（NCT/ChiCTR/CDE 等）合并，其余并排保留来源"
+    "mergeRule": "仅同一登记号（NCT/ChiCTR/CDE 等）合并，其余并排保留来源",
+    "relevanceReview": "宽词检索返回记录；未逐条审核与睾丸癌的相关性，recordCount 不代表经审核的睾丸癌研究数或检索覆盖度",
+    "rerunAuthorization": "用户 2026-11-18 确认授权重新取数；本次为新快照，不是修改既有哈希"
   },
   "files": {
     "trials-2026.jsonl": {
-      "sha256": "1bd930e1134ce51d28d7abb24341b41a2d9adabc62c291ad042f18956ac7af58"
+      "sha256": "050a58283d5724401aeba3bdc419f3c0584a70b49b421d2d023e789743078d2f"
     },
     "testicular_trials_2026.sqlite": {
-      "sha256": "c19870a5082ba1afcd18e4b8ebf744b6fe118d7fea6c2129aeb6940d79580f05"
+      "sha256": "7e5da130adb517ef081b7184a7b86901482a29d3e763e22ae7bc46d6c21eaf53"
     }
-  }
+  },
+  "queryResults": [
+    {
+      "query": "testicular cancer",
+      "statuses": [
+        {
+          "sourceId": "chictr_online",
+          "state": "FAILED",
+          "reasonCode": "UPSTREAM_MCP_FAILED"
+        },
+        {
+          "sourceId": "chictr_pancreatic_archive",
+          "state": "NEEDS_SETUP",
+          "reasonCode": "CORPUS_NOT_CONFIGURED"
+        },
+        {
+          "sourceId": "chinadrugtrials",
+          "state": "NO_RESULTS",
+          "reasonCode": "EMPTY_RESULT_SET"
+        },
+        {
+          "sourceId": "ctv",
+          "state": "FAILED",
+          "reasonCode": "UPSTREAM_UNKNOWN_ERROR"
+        },
+        {
+          "sourceId": "ictrp",
+          "state": "FAILED",
+          "reasonCode": "UPSTREAM_UNKNOWN_ERROR"
+        },
+        {
+          "sourceId": "xyb_chinadrugtrials_archive",
+          "state": "NEEDS_SETUP",
+          "reasonCode": "ARCHIVE_NOT_CONFIGURED"
+        }
+      ]
+    },
+    {
+      "query": "testicular neoplasms",
+      "statuses": [
+        {
+          "sourceId": "chictr_online",
+          "state": "FAILED",
+          "reasonCode": "UPSTREAM_MCP_FAILED"
+        },
+        {
+          "sourceId": "chictr_pancreatic_archive",
+          "state": "NEEDS_SETUP",
+          "reasonCode": "CORPUS_NOT_CONFIGURED"
+        },
+        {
+          "sourceId": "chinadrugtrials",
+          "state": "NO_RESULTS",
+          "reasonCode": "EMPTY_RESULT_SET"
+        },
+        {
+          "sourceId": "ctv",
+          "state": "FAILED",
+          "reasonCode": "UPSTREAM_UNKNOWN_ERROR"
+        },
+        {
+          "sourceId": "ictrp",
+          "state": "FAILED",
+          "reasonCode": "UPSTREAM_UNKNOWN_ERROR"
+        },
+        {
+          "sourceId": "xyb_chinadrugtrials_archive",
+          "state": "NEEDS_SETUP",
+          "reasonCode": "ARCHIVE_NOT_CONFIGURED"
+        }
+      ]
+    },
+    {
+      "query": "生殖细胞肿瘤",
+      "statuses": [
+        {
+          "sourceId": "chictr_online",
+          "state": "FAILED",
+          "reasonCode": "UPSTREAM_MCP_FAILED"
+        },
+        {
+          "sourceId": "chictr_pancreatic_archive",
+          "state": "NEEDS_SETUP",
+          "reasonCode": "CORPUS_NOT_CONFIGURED"
+        },
+        {
+          "sourceId": "chinadrugtrials",
+          "state": "NO_RESULTS",
+          "reasonCode": "EMPTY_RESULT_SET"
+        },
+        {
+          "sourceId": "ctv",
+          "state": "FAILED",
+          "reasonCode": "UPSTREAM_UNKNOWN_ERROR"
+        },
+        {
+          "sourceId": "ictrp",
+          "state": "FAILED",
+          "reasonCode": "UPSTREAM_UNKNOWN_ERROR"
+        },
+        {
+          "sourceId": "xyb_chinadrugtrials_archive",
+          "state": "NEEDS_SETUP",
+          "reasonCode": "ARCHIVE_NOT_CONFIGURED"
+        }
+      ]
+    },
+    {
+      "query": "睾丸癌",
+      "statuses": [
+        {
+          "sourceId": "chictr_online",
+          "state": "FAILED",
+          "reasonCode": "UPSTREAM_MCP_FAILED"
+        },
+        {
+          "sourceId": "chictr_pancreatic_archive",
+          "state": "NEEDS_SETUP",
+          "reasonCode": "CORPUS_NOT_CONFIGURED"
+        },
+        {
+          "sourceId": "chinadrugtrials",
+          "state": "SUCCESS",
+          "reasonCode": "OK"
+        },
+        {
+          "sourceId": "ctv",
+          "state": "FAILED",
+          "reasonCode": "UPSTREAM_UNKNOWN_ERROR"
+        },
+        {
+          "sourceId": "ictrp",
+          "state": "FAILED",
+          "reasonCode": "UPSTREAM_UNKNOWN_ERROR"
+        },
+        {
+          "sourceId": "xyb_chinadrugtrials_archive",
+          "state": "NEEDS_SETUP",
+          "reasonCode": "ARCHIVE_NOT_CONFIGURED"
+        }
+      ]
+    }
+  ]
 }

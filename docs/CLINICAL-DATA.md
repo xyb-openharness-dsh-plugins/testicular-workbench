@@ -2,13 +2,14 @@
 
 > 临床数据台账：医学约束 + 临床试验快照。M0 版（M1 完成 10 主题医学约束核对；未过临床审核的阈值与求助短语一律【待核】占位）。
 
-## §一 采集与快照（M4，2026-11-14 实测）
+## §一 采集与快照（M4，2026-11-18 用户授权重跑）
 
-- 脚本：scripts/fetch-testicular-trials-2026.mjs（unified-trial-mcp MCP stdio，绝不自拼 URL）。
-- 实测：检索 4 词条（睾丸癌 / testicular cancer / testicular neoplasms / 生殖细胞肿瘤），合并 235 条（合并前 235）：chinadrugtrials 9、ctv 7、ictrp 219。
-- 通道终态（如实，FAILED 不算查过）：chictr_online=FAILED（全部词条）、chictr_pancreatic_archive=NEEDS_SETUP（离线语料仅胰腺癌覆盖）、ictrp 在「生殖细胞肿瘤」中文词条 FAILED；xyb_chinadrugtrials_archive=NO_RESULTS；其余 SUCCESS/NO_RESULTS 逐词条入 manifest 与 source_statuses 表。
-- 四件套：research/testicular/{manifest.json, testicular_trials_2026.jsonl, testicular_trials_2026.sqlite, source_statuses}（jsonl/sqlite 计数与 hash 断言在 check-trial-snapshot）。
-- 登记状态一律「未核实」；快照会过期（freshness.staleAfterDays）；入排标准不在快照内，详情浮窗固定写「本机快照只存登记的结构化字段，入排标准请到官方登记页核对」。
+- 脚本：`scripts/fetch-testicular-trials-2026.mjs`，通过 `unified-trial-mcp@0.3.1` 的 MCP stdio 通道取数；没有自行拼接上游 URL。
+- 本次取数日期：2026-11-18；四个查询词（睾丸癌 / testicular cancer / testicular neoplasms / 生殖细胞肿瘤）返回 9 条，合并前 9 条。只有 chinadrugtrials 返回记录（9 条）；其余来源逐词条终态见 `manifest.json` 与 SQLite `source_statuses`。
+- 9 条是宽词检索返回记录，未逐条审核与睾丸癌的相关性；不能写成经审核的睾丸癌研究数或覆盖度。登记状态一律“未核实”；获取成功不代表内容已核实。
+- 用户 2026-11-18 确认：原 SQLite 未入仓且已不可恢复，授权使用仓内既有取数脚本重跑。当前 SQLite/JSONL 与 manifest 哈希按新产物重新计算登记；这是获授权的新快照，不是修改哈希凑绿。
+- 交付物：`research/testicular/{manifest.json,trials-2026.jsonl,testicular_trials_2026.sqlite}`。`node scripts/check-trial-snapshot.mjs .` 与 `node scripts/check-trial-chain.mjs .` 均通过。来源状态详见 manifest 中按查询词列出的 `queryResults` 与 SQLite `source_statuses`。
+- 快照会过期（manifest 记录来源状态）；入排标准不在快照内，详情浮窗固定写“本机快照只存登记的结构化字段，入排标准请到官方登记页核对”。
 
 ## §二 医学约束主题（M1 逐项核数；下表为边界声明，非结论）
 
@@ -38,9 +39,8 @@
 - 指南只定内容边界，不转成自测或选治疗；本台全部派生为事实陈述（较上次/完成与否）。
 - 「紧急情况联系医生/急诊」求助短语：只呈现医生已确认行动计划原话或通用「需要问你的医生」出口，模板短语【待核】。
 
-## §五 M4 复核补记（2026-11-17）
+## §五 M4 复核补记（2026-11-18）
 
-- `trials-2026.jsonl` 存在（235行），文件 SHA-256 与 manifest 声明一致；JSONL→试验链覆盖门禁通过。
-- M4 四件套要求的 `testicular_trials_2026.sqlite` 当前缺失。manifest 仍声明旧文件 SHA-256 `c19870a5082ba1afcd18e4b8ebf744b6fe118d7fea6c2129aeb6940d79580f05`、235 条记录与 24 行 source status。快照一致性门禁因此失败；没有重建数据库或改写哈希，因为当前工作区没有原 SQLite/source_statuses 原件用于逐字段核验。
-- 235 是宽词检索的登记快照条目总数，尚未逐条确认睾丸癌相关性，不可作为相关试验数量或覆盖度结论。部分在线检索通道 FAILED；原 manifest 的终态原件应随快照恢复后核验。
-- M4 状态：未收口。恢复可信原件/重跑获授权的统一检索工具，逐条复核病种相关性和来源链接，再执行 JSONL/SQLite/manifest 一致性门禁；不得伪造或改 hash 凑绿。
+- 用户授权重跑后生成 9 条 JSONL / 9 条 SQLite 记录、24 行来源终态；新文件 SHA-256 见 manifest。`check-trial-snapshot` 输出 `records=9/9 sourceStatuses=24` 并 `PASS snapshot consistency: 1 snapshot(s)`；`check-trial-chain` 输出 `✓ 临床试验闸门通过`。
+- 仅 chinadrugtrials 对“睾丸癌”查询返回 9 条；其余通道失败或未配置，细节按查询词记录于 manifest。此检索不是全库完整检索。
+- 9 条均为宽词检索返回记录，尚未逐条审核相关性，不可称为睾丸癌相关研究数。原 235 条同样是未审核的宽词检索数；旧快照缺失后已按用户授权生成新快照，未沿用旧记录或旧哈希。
