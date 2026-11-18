@@ -66,3 +66,30 @@
 - 独立设计审查逐项结果已记入 `docs/PROTOTYPE-REVIEW.md`。发现旧快照日期/数量过期和密集末值标签碰撞，已做最小修订；HTML hash 未变。修订后浏览器探针通过，dense labels 3 个（y=68/82/96）。
 - 新建 `docs/MILESTONE-EVIDENCE.md`，既有 M0/M1/M3/M5 仅据 git log 与 DAY-REPORT-2 回填；M4 引用本轮新快照证据。
 - 当前里程碑：M5 production UI 接入及 parity；随后 M6/M9。Desktop 实机状态仍未验证。
+
+## 2026-11-18 M5 生产工作台与 parity
+
+- 生产 `public/` 现在由已确认的 `prototypes/v0.2` 精确构建；修正旧迁移器错误指向其他病种的问题，并补上包 `files` 白名单中的 `public/`。
+- DSH 宿主接入业务 iframe；档案切换同步给业务页；宿主顶栏按三段布局呈现品牌/版本、状态说明、操作，并加「? 疾病概要」入口；Agent 会话仍由宿主面板处理。
+- 业务页接入 SQLite bootstrap、化验/影像/医生原话/生育力/问题/笔记等写入、节点完成和当前档案导出。记录修订采用事务性新行并保留 `superseded_by`；导出在服务端过滤私密行。UI parity 通过。
+- 临时 profile 浏览器/API 冒烟：连接 2 个档案；化验写入后读回 3.3；私密笔记回读标记为 private，导出结果未含私密行；浏览器错误 0。
+- `npm test` 12/12。独立 M5 证据、限制和 Desktop 未验证项见 `docs/MILESTONE-EVIDENCE.md`。
+- 下一步：升至 0.2.0、最终 pack 和 starter 测试 profile 静态检查；Desktop 未安装，实机行为继续标未验证。
+
+## 2026-11-18 M5 生产工作台与 parity
+
+- 生产 `public/` 现在由已确认的 `prototypes/v0.2` 精确构建；修正旧迁移器错误指向其他病种的问题，并补上包 `files` 白名单中的 `public/`。
+- DSH 宿主接入业务 iframe；档案切换同步给业务页；宿主顶栏按三段布局呈现品牌/版本、状态说明、操作，并加「? 疾病概要」入口；Agent 会话仍由宿主面板处理。
+- 业务页接入 SQLite bootstrap、化验/影像/医生原话/生育力/问题/笔记等写入、节点完成和当前档案导出。记录修订采用事务性新行并保留 `superseded_by`；导出在服务端过滤私密行。UI parity 通过。
+- 临时 profile 浏览器/API 冒烟：连接 2 个档案；化验写入后读回 3.3；私密笔记回读标记为 private，导出结果未含私密行；浏览器错误 0。
+- `npm test` 12/12。独立 M5 证据、限制和 Desktop 未验证项见 `docs/MILESTONE-EVIDENCE.md`。
+- 下一步：升至 0.2.0、最终 pack 和 starter 测试 profile 静态检查；Desktop 未安装，实机行为继续标未验证。
+
+## 2026-11-18 M5 生产工作台与 parity
+
+- 生产 `public/` 现在由已确认的 `prototypes/v0.2` 精确构建；修正旧迁移器错误指向其他病种的问题，并补上包 `files` 白名单中的 `public/`。
+- DSH 宿主接入业务 iframe；档案切换同步给业务页；宿主顶栏按三段布局呈现品牌/版本、状态说明、操作，并加「? 疾病概要」入口；Agent 会话仍由宿主面板处理。
+- 业务页接入 SQLite bootstrap、化验/影像/医生原话/生育力/问题/笔记等写入、节点完成和当前档案导出。记录修订采用事务性新行并保留 `superseded_by`；导出在服务端过滤私密行。UI parity 通过。
+- 临时 profile 浏览器/API 冒烟：连接 2 个档案；化验写入后读回 3.3；私密笔记回读标记为 private，导出结果未含私密行；浏览器错误 0。
+- `npm test` 12/12。独立 M5 证据、限制和 Desktop 未验证项见 `docs/MILESTONE-EVIDENCE.md`。
+- 下一步：升至 0.2.0、最终 pack 和 starter 测试 profile 静态检查；Desktop 未安装，实机行为继续标未验证。

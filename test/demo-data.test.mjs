@@ -26,8 +26,9 @@ test('两套档案拥有独立记录 ID，并覆盖不同记录密度', () => {
 })
 
 test('来源快照将失败通道和未核实状态保留为数据', () => {
-  assert.equal(source.sources.snapshotCount, 235)
-  assert.equal(source.sources.snapshotDate, '2026-11-14')
+  assert.equal(source.sources.snapshotCount, 9)
+  assert.equal(source.sources.snapshotDate, '2026-11-18')
+  assert.match(source.sources.channelStates.chinadrugtrials, /相关性未逐条审核/)
   assert.equal(source.sources.channelStates.chictr_online, 'FAILED')
-  assert.equal(source.sources.channelStates['ictrp 中文词条'], 'FAILED')
+  assert.equal(source.sources.channelStates.ictrp, 'FAILED')
 })

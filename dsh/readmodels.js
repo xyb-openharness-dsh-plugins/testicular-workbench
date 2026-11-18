@@ -57,45 +57,45 @@ export function readSubject(db, pr) {
     id: l.id, metric: l.metric_key, metricTitle: metricTitle[l.metric_key] ?? null,
     date: l.measured_on ?? null, value: l.value ?? null, valueText: l.value_text ?? null,
     unit: l.unit ?? null, method: l.method ?? null, org: l.org ?? null,
-    reportId: l.report_id ?? null, private: !!l.is_private, note: l.note ?? null, ver: l.ver ?? 1,
+    reportId: l.report_id ?? null, private: !!l.is_private, note: l.note ?? null, ver: l.ver ?? 1, supersededBy: l.superseded_by ?? null,
   }));
 
   const imaging = db.prepare('SELECT * FROM imaging_records WHERE profile_key = ? ORDER BY rowid').all(key).map((r) => ({
     id: r.id, date: r.study_on ?? null, type: r.study_type ?? null, region: r.region ?? null,
     impression: r.impression ?? null, org: r.org ?? null, reportId: r.report_id ?? null,
-    private: !!r.is_private, note: r.note ?? null, ver: r.ver ?? 1,
+    private: !!r.is_private, note: r.note ?? null, ver: r.ver ?? 1, supersededBy: r.superseded_by ?? null,
   }));
 
   const events = db.prepare('SELECT * FROM course_events WHERE profile_key = ? ORDER BY rowid').all(key).map((e) => ({
     id: e.id, date: e.event_on ?? null, type: e.event_type ?? null, title: e.title ?? null,
-    detail: e.detail ?? null, org: e.org ?? null, private: !!e.is_private, note: e.note ?? null, ver: e.ver ?? 1,
+    detail: e.detail ?? null, org: e.org ?? null, private: !!e.is_private, note: e.note ?? null, ver: e.ver ?? 1, supersededBy: e.superseded_by ?? null,
   }));
 
   const quotes = db.prepare('SELECT * FROM doctor_quotes WHERE profile_key = ? ORDER BY rowid').all(key).map((q) => ({
     id: q.id, date: q.quote_on ?? null, category: q.category ?? null, text: q.quote_text ?? null,
-    source: q.source ?? null, private: !!q.is_private, note: q.note ?? null, ver: q.ver ?? 1,
+    source: q.source ?? null, private: !!q.is_private, note: q.note ?? null, ver: q.ver ?? 1, supersededBy: q.superseded_by ?? null,
   }));
 
   const nodes = db.prepare('SELECT * FROM monitoring_nodes WHERE profile_key = ? ORDER BY rowid').all(key).map((n) => ({
     id: n.id, dueOn: n.due_on ?? null, nodeType: n.node_type ?? null, planQuoteId: n.plan_quote_id ?? null,
     done: !!n.done_flag, doneOn: n.done_on ?? null, linkedNote: n.linked_note ?? null,
-    private: !!n.is_private, ver: n.ver ?? 1,
+    private: !!n.is_private, ver: n.ver ?? 1, supersededBy: n.superseded_by ?? null,
   }));
 
   const fertility = db.prepare('SELECT * FROM fertility_records WHERE profile_key = ? ORDER BY rowid').all(key).map((f) => ({
     id: f.id, date: f.record_on ?? null, step: f.step ?? null, institution: f.institution ?? null,
-    private: !!f.is_private, note: f.note ?? null, ver: f.ver ?? 1,
+    private: !!f.is_private, note: f.note ?? null, ver: f.ver ?? 1, supersededBy: f.superseded_by ?? null,
   }));
 
   const questions = db.prepare('SELECT * FROM visit_questions WHERE profile_key = ? ORDER BY rowid').all(key).map((q) => ({
     id: q.id, text: q.question_text ?? null, ord: q.ord ?? null, answered: !!q.answered_flag,
     answeredNote: q.answered_note ?? null, createdOn: q.created_on ?? null,
-    private: !!q.is_private, ver: q.ver ?? 1,
+    private: !!q.is_private, ver: q.ver ?? 1, supersededBy: q.superseded_by ?? null,
   }));
 
   const notes = db.prepare('SELECT * FROM notes WHERE profile_key = ? ORDER BY rowid').all(key).map((n) => ({
     id: n.id, date: n.note_on ?? null, text: n.text ?? null,
-    private: !!n.is_private, ver: n.ver ?? 1,
+    private: !!n.is_private, ver: n.ver ?? 1, supersededBy: n.superseded_by ?? null,
   }));
 
   return {

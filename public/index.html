@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="color-scheme" content="light">
+  <title>小勇宝 TestiPal · __VERSION_DISPLAY__ 交互原型</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ccircle cx=%2250%22 cy=%2250%22 r=%2242%22 fill=%22%23ef8295%22/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="primer.css">
+<script>window.__TESTI_PRODUCTION__=true;window.__TESTI_API_BASE__="__API_BASE__";</script>
+<style>html,body,#shell,.shell,.frame{height:100%;min-height:0}body{overflow:hidden}.dsh-embedded .topbar,.dsh-embedded .sidebar .profile-switch,.dsh-embedded .agent-pane,.dsh-embedded #agent-splitter,.dsh-embedded [data-action="agent"]{display:none!important}.dsh-embedded .frame{height:100vh}.dsh-embedded #main{min-height:0}</style>
+</head>
+<body>
+  <div class="shell" id="shell">
+    <header class="topbar">
+      <a class="brand" href="#page=dashboard" data-nav="dashboard" aria-label="小勇宝 TestiPal 看板">
+        <span class="brand-flower" aria-hidden="true">✿</span><span><strong>小勇宝</strong><small>TestiPal</small></span>
+        <span class="version">__VERSION_DISPLAY__</span>
+      </a>
+      <p class="top-note">把复查记录和想问的问题，收在一处</p>
+      <div class="top-actions"><span class="demo-tag">合成演示数据</span><button class="button plain" data-primer-open data-primer-entry="top" aria-label="疾病概要：定义、医学资料与指南情况、治疗全景、发展趋势">? 疾病概要</button><button class="button primary" data-action="agent">AI 对话</button><button class="icon-button" aria-label="设置" data-action="settings">⚙</button></div>
+    </header>
+    <div class="frame">
+      <aside class="sidebar" aria-label="工作台导航">
+        <div class="profile-switch"><label for="profile-select">当前档案</label><select id="profile-select"></select></div>
+        <nav id="nav"></nav>
+        <div class="sidebar-foot"><span class="status-dot"></span> 本地演示 · 不连接服务<br><span class="mini">AI 按钮为宿主交互模拟</span></div>
+      </aside>
+      <main id="main" tabindex="-1"></main>
+      <button id="agent-splitter" class="splitter" role="separator" aria-label="调整 AI 面板宽度" aria-orientation="vertical" aria-valuemin="25" aria-valuemax="45" aria-valuenow="35" tabindex="0" hidden></button>
+      <div id="agent-pane" class="agent-pane" aria-label="Agent 面板模拟" hidden></div>
+    </div>
+  </div>
+  <div id="overlay-root"></div><div id="toast" role="status" aria-live="polite"></div>
+  <script src="demo-data.js"></script>
+  <script src="primer-data.js"></script>
+  <script src="primer.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

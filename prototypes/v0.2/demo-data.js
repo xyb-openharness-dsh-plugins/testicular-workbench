@@ -314,12 +314,12 @@ window.TESTI_DEMO = {
     "snapshotDate": "2026-11-18",
     "snapshotCount": 9,
     "channelStates": {
-      "chinadrugtrials": "睾丸癌词条 9 条；其他3词 NO_RESULTS",
-      "ctv": "FAILED（4词）",
-      "ictrp": "FAILED（4词）",
-      "chictr_online": "FAILED（4词）",
-      "chictr_pancreatic_archive": "NEEDS_SETUP（4词；仅胰腺癌语料）",
-      "xyb_chinadrugtrials_archive": "NEEDS_SETUP（4词）"
+      "chinadrugtrials": "9 条（睾丸癌查询返回；相关性未逐条审核）",
+      "ctv": "FAILED",
+      "ictrp": "FAILED",
+      "chictr_online": "FAILED",
+      "chictr_pancreatic_archive": "NEEDS_SETUP（胰腺癌语料，不覆盖睾丸癌）",
+      "xyb_chinadrugtrials_archive": "NEEDS_SETUP"
     }
   }
 };

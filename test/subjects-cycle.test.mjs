@@ -32,16 +32,21 @@ test('subjects 闭环：创建(is_demo=0) → 列表 → 切库回滚 → 删除
     assert.ok(rec.ok && rec.id > 0, 'addRecord 未返回新行 id');
     const lab = wb.addRecord({ profileKey: created.profileKey, targetTable: 'lab_results', record: { metric_key: 'afp', measured_on: '2026-11-01', value: 2.2, unit: 'ng/mL', org: '自录' } });
     assert.ok(lab.ok, 'lab_results 写入失败');
+    const correction = wb.addRecord({ profileKey: created.profileKey, targetTable: 'lab_results', supersedes: lab.id, record: { metric_key: 'afp', measured_on: '2026-11-01', value: 2.1, unit: 'ng/mL', org: '自录' } });
+    assert.equal(correction.ver, 2, '更正应递增版本');
+    assert.equal(correction.supersedes, lab.id, '更正应指向旧记录');
+    assert.throws(() => wb.addRecord({ profileKey: created.profileKey, targetTable: 'lab_results', supersedes: lab.id, record: { metric_key: 'afp', value: 1 } }), /已被更正/);
     assert.throws(() => wb.addRecord({ profileKey: created.profileKey, targetTable: 'subjects', record: {} }), /target_table/);
     assert.throws(() => wb.addRecord({ profileKey: 'local-nothing', targetTable: 'notes', record: { text: 'x' } }), /档案不存在/);
     const boot = wb.bootstrap();
     const mineModel = boot.profiles.find((p) => p.id === created.profileKey);
     assert.equal(mineModel.notes.filter((n) => n.private).length, 1, 'bootstrap（看板出口）应保留私密行与标记');
-    assert.equal(mineModel.latest.afp.value, 2.2, '最近值未聚合');
+    assert.equal(mineModel.latest.afp.value, 2.1, '最近值未聚合');
+    assert.equal(mineModel.labs.find((x) => x.id === lab.id).supersededBy, correction.id, '读模型应暴露修订关联');
     const exported = wb.exportData();
     const exportedMine = exported.profiles.find((p) => p.id === created.profileKey);
     assert.equal(exportedMine.notes.length, 0, '导出出口不得包含 is_private=1 的行');
-    assert.equal(exportedMine.labs.length, 1, '导出应保留非私密行');
+    assert.equal(exportedMine.labs.length, 2, '导出应保留非私密事实及其修订历史');
     /* switchRoot：先开新库成功再替换；失败回滚 */
     const nextRoot = mkdtempSync(join(tmpdir(), 'twb-next-'));
     const before = wb.dataRoot;

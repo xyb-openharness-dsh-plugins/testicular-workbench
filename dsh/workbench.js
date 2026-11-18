@@ -173,10 +173,30 @@ export class Workbench {
       const known = this.db.prepare('SELECT 1 FROM metric_defs WHERE key = ?').get(String(mk));
       if (!known) throw new Error(`未知指标 key：${mk}（目录见 metric_defs）`);
     }
+    let ver = 1;
+    const oldId = input.supersedes == null ? null : Number(input.supersedes);
+    let old = null;
+    if (oldId !== null) {
+      if (!Number.isInteger(oldId) || oldId < 1) throw new Error('无效的 supersedes');
+      old = this.db.prepare(`SELECT id, profile_key, ver, superseded_by FROM ${targetTable} WHERE id = ?`).get(oldId);
+      if (!old || old.profile_key !== profileKey || old.superseded_by != null) throw new Error('待更正记录不存在、档案不匹配或已被更正');
+      ver = Number(old.ver || 1) + 1;
+    }
     const placeholders = cols.map(() => '?').join(',');
-    const sql = `INSERT INTO ${targetTable} (${cols.join(',')}, ver) VALUES (${placeholders}, 1)`;
-    const info = this.db.prepare(sql).run(...vals);
-    return { ok: true, targetTable, id: Number(info.lastInsertRowid), profileKey };
+    const insert = this.db.prepare(`INSERT INTO ${targetTable} (${cols.join(',')}, ver) VALUES (${placeholders}, ?)`);
+    const link = oldId === null ? null : this.db.prepare(`UPDATE ${targetTable} SET superseded_by = ? WHERE id = ? AND superseded_by IS NULL`);
+    let id;
+    if (oldId !== null) this.db.exec('BEGIN IMMEDIATE');
+    try {
+      const row = insert.run(...vals, ver);
+      id = Number(row.lastInsertRowid);
+      if (oldId !== null && Number(link.run(id, oldId).changes) !== 1) throw new Error('更正冲突：旧记录已变化，请刷新后重试');
+      if (oldId !== null) this.db.exec('COMMIT');
+    } catch (error) {
+      if (oldId !== null) this.db.exec('ROLLBACK');
+      throw error;
+    }
+    return { ok: true, targetTable, id, profileKey, ver, supersedes: oldId };
   }
 
   close() {
