@@ -116,3 +116,11 @@
 - M2 G2 确认、M4 快照授权重跑、M5 production parity、M6 测试 profile 各项证据见 `docs/MILESTONE-EVIDENCE.md`；独立 P8 试验线范围审查见 `docs/PROTOTYPE-REVIEW.md`。
 - `node scripts/check-install.mjs` exit 1，未发现 DSH Desktop `io.dsh.desktop`；真实 Desktop profile 安装、退出重开、点击走查统一记为未验证。未发布 Release、未打 tag、未改组织 BACKLOG。
 - 收尾工作目录报告：`~/dev/testicular-run/DAY-REPORT.md`；仓库副本：`DAY-REPORT-3.md`。
+
+## 2026-11-19 同步远端 + Desktop 装机实测（M6）
+
+- 远端同步：本地 0.1.2 分叉已备份到分支 backup/local-0.1.2-m2；main 对齐 origin/main（另一路 M2–M9 推进至 0.2.0：check 0 / test 12/12 / audit 40/40；试验线按用户确认的 P8 范围裁剪为快照保留 + manifest trimmed，非本机复算）。
+- 装机链路（本机 DSH Desktop，harness profiles/web）：npm pack 0.2.0（40 files，sha256 cd539be1…，与远端记录一致）→ pnpm add -w 装入 profile（兄弟包 55 个未受影响）→ 登记 dsh.profile.bundles（82 项，兄弟工作台 65）→ 重启（04:13:56 启动，晚于装机 mtime）→ verify-desktop-load：本次段无激活错误、dshHomePath 数据目录生成 sqlite、清单含本仓 → check-install exit 0。
+- Desktop 实机走查（CDP + 截图）：工作台真实显示「小勇宝 TestiPal v0.2.0」，顶栏 大字 / ? 疾病概要 / 资料目录 / AI 对话 四键在位；? 点击后面板可见（4 段：定义 / 医学资料规范和指南情况 / 目前治疗全景概要 / 发展趋势，hash #disease-primer，← 与 ✕ 双入口）；AI 对话点击打开宿主原生会话面板（未报错，草稿桥逻辑按 newSession+defaultWorkspace 实现核对）。
+- 发现并修复：0.2.0 全页只有顶栏一个 primer 入口，首页缺文字入口（36 号双入口要求）→ 0.2.1 首页新增「先了解这个病」卡片（data-primer-entry="home"）；重建 public、pack 0.2.1（sha256 0c38fe60…）并重装重验：双入口都在，两处均可打开同一四段面板，home 入口关闭后焦点回归正确。
+- 如实记录未通过/未验证：① 顶栏入口在程序化点击下关闭后焦点落到 body（真实鼠标点击路径待人工复核）；② scripts/probe-testicular-m2.mjs（远端版）本机缺 puppeteer-core，未能执行（环境缺口，不记为通过）；③ 独立评审轮次本轮未跑；④ 业务写入闭环（录入→入库→回读）在 Desktop 内未逐条点验。

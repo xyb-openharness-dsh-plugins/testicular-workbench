@@ -1,5 +1,12 @@
 # 变更记录
 
+## 0.2.1 — 2026-11-19
+
+- 修复 Desktop 实机走查发现的界面缺口（证据：装机后在 DSH Desktop 内用 CDP 逐项点击）：v0.2.0 全页只有顶栏「? 疾病概要」一个 `data-primer-open`；按 36 号与家族口径，看板首页必须有文字入口。首页新增「先了解这个病」卡片，按钮为 `data-primer-open data-primer-entry="home"`，与顶栏 `data-primer-entry="top"` 各自独立，关闭后焦点按 entry key 回到各自触发者。
+- 保持「? 专供疾病概要」不变；AI 对话仍由宿主原生面板承载，客户端 `newSession(defaultWorkspace?.()?.workspaceId)` 逻辑未改（不留空会话、失败显示原因、草稿只填不发）。
+- 门禁：`npm run check` exit 0 · `npm test` 12/12 · `npm run audit` 40/40 · `probe-disease-primer` 10/10（显式 --url 本仓原型）。
+- 用户可见结果：Desktop 内首页可直接点开疾病概要，不必先找顶栏的 ?；两种打开方式看到同一份四段内容。
+
 ## 0.2.0 — 2026-11-18
 
 - 按用户确认的 v0.2.0 HTML 原型接入 DSH 生产工作台与 SQLite 读写；新增事务性修订链接、宿主档案切换同步、疾病概要入口和真实 JSON 导出。
