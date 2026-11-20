@@ -40,6 +40,7 @@ export class Workbench {
   constructor({ root, seedDemo = true } = {}) {
     if (typeof root !== 'string' || root.trim() === '') throw new Error('Workbench 需要 root（用户资料目录）');
     this.root = root;
+    this.initialRoot = root;
     this.dbFile = join(root, DB_FILE);
     this.db = null;
     this.seedDemo = seedDemo;
@@ -80,20 +81,43 @@ export class Workbench {
     const prevDb = this.db;
     let nextDb = null;
     let prevClosed = false;
+    let pointerDb = null;
+    let previousPointer;
+    let pointerChanged = false;
     try {
       nextDb = openStore(join(dir, DB_FILE));
       migrate(nextDb);
       /* 新库完全就绪后才替换：openStore/migrate 抛错都走不到这里 */
+      const nextSeeded = this.seedDemo ? seedDemoData(nextDb) : { skipped: true, profiles: 0 };
+      const setRoot = (db, value) => db.prepare("INSERT INTO app_setting(key,value,updated_at) VALUES('data_root',?,datetime('now')) ON CONFLICT(key) DO UPDATE SET value=excluded.value, updated_at=excluded.updated_at").run(value);
+      setRoot(nextDb, dir);
+      /* 启动总是先打开配置默认目录；连续换目录也必须更新这个固定锚点。 */
+      pointerDb = prevRoot === this.initialRoot ? prevDb
+        : dir === this.initialRoot ? nextDb : openStore(join(this.initialRoot, DB_FILE));
+      if (pointerDb !== prevDb && pointerDb !== nextDb) migrate(pointerDb);
+      previousPointer = pointerDb.prepare("SELECT value FROM app_setting WHERE key='data_root'").get()?.value;
+      setRoot(pointerDb, dir);
+      pointerChanged = true;
+      if (pointerDb !== prevDb && pointerDb !== nextDb) { closeStore(pointerDb); pointerDb = null; }
       closeStore(prevDb);
       prevClosed = true;
       this.dbFile = join(dir, DB_FILE);
       this.db = nextDb;
       this.root = dir;
-      this.db.prepare("INSERT INTO app_setting(key,value,updated_at) VALUES('data_root',?,datetime('now')) ON CONFLICT(key) DO UPDATE SET value=excluded.value, updated_at=excluded.updated_at").run(dir);
-      this.seeded = this.seedDemo ? seedDemoData(this.db) : { skipped: true, profiles: 0 };
+      this.seeded = nextSeeded;
       return this.root;
     } catch (error) {
+      if (pointerDb && pointerDb !== prevDb && pointerDb !== nextDb) closeStore(pointerDb);
       if (nextDb) closeStore(nextDb);
+      if (pointerChanged) {
+        let restoreDb = null;
+        try {
+          restoreDb = !prevClosed && prevRoot === this.initialRoot ? prevDb : openStore(join(this.initialRoot, DB_FILE));
+          if (previousPointer === undefined) restoreDb.prepare("DELETE FROM app_setting WHERE key='data_root'").run();
+          else restoreDb.prepare("UPDATE app_setting SET value=?, updated_at=datetime('now') WHERE key='data_root'").run(previousPointer);
+        } catch { /* 保留原始切换错误；打开旧库后仍可人工处理。 */ }
+        finally { if (restoreDb && restoreDb !== prevDb) closeStore(restoreDb); }
+      }
       this.root = prevRoot;
       this.dbFile = prevFile;
       if (!prevClosed) {

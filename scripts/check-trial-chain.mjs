@@ -46,6 +46,7 @@ export function check(input) {
   const hasData = trialFiles.length > 0
   const hasBackend = /trialMatch\s*\(|trials?\/search|\/trials?\b/.test(backend)
   const trimOnly = /裁剪说明|裁剪临床试验|不假装有功能/.test(ui)
+  const publicReader = /clinical-refresh/.test(ui) && /clinical\/ctg/.test(backend)
 
   /* ---------- 裁剪 + 实测证据（合法分支，2026-11-13 回流） ----------
    * 冲突史：LESSONS L76（cold-agglutinin）要求「裁剪线也实跑 M4」，但本检查的 hasData 分支
@@ -63,12 +64,14 @@ export function check(input) {
     const noBackend = !hasBackend
     const measuredDocs = /\d+\s*条/.test(docs) && /(实测|快照|snapshot)/.test(docs)
     if (!noSearchUi || !noBackend) fails.push('manifest 标记 trimmed:true 但前端仍有检索入口或 trialMatch 后端——那就不是裁剪，回到四段链路判')
-    else oks.push('裁剪+实测证据：前端无检索入口、无匹配后端')
+    else oks.push(publicReader
+      ? '历史快照裁剪有实测证据；另有独立的官方公开登记只读查询，无个人匹配后端'
+      : '历史快照裁剪有实测证据；无个人检索或匹配后端')
     if (rec <= 0) fails.push('trimmed:true 但 manifest.snapshot.records<=0——裁剪证据必须是真的实测样本')
     else oks.push(`裁剪证据实测样本 ${rec} 条（manifest）`)
     if (!measuredDocs) fails.push('裁剪文案缺实测 N 条/快照口径——L76：未查过不能写零结果，查过了就要写数字')
     else oks.push('裁剪文案带实测数字与快照口径')
-    if (fails.length === 0) oks.push('裁剪+实跑 M4 组合合法（L76）：数据为证据、无假入口、文案如实')
+    if (fails.length === 0) oks.push('裁剪+实跑 M4 组合合法（L76）：旧数据仅作历史证据，文案如实')
     return { pass: fails.length === 0, fails, oks }
   }
 
@@ -154,7 +157,7 @@ function readTree(dir, depth = 0) {
   return out
 }
 const ui = `${read('lib/client.js')}\n${read('public/app.js')}\n${readTree('public')}\n${read('lib/client-trials.js')}`
-const backend = `${read('dsh/index.js')}\n${read('dsh/workbench.js')}`
+const backend = `${read('dsh/index.js')}\n${read('dsh/workbench.js')}\n${read('dsh/server.js')}\n${read('dsh/clinical.js')}`
 const docs = `${read('docs/CLINICAL-DATA.md')}\n${read('docs/DEV-REQUIREMENTS.md')}` +
   readdirSync(join(root, 'docs')).filter((n) => /^DEV-REQUIREMENTS/.test(n)).map((n) => read(join('docs', n))).join('\n')
 

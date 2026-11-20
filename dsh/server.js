@@ -20,6 +20,8 @@
  */
 import { readFileSync, existsSync, realpathSync, statSync } from 'node:fs';
 import { extname, join, normalize, relative, resolve, sep } from 'node:path';
+import { mineruSettingsStatus, saveMineruToken, clearMineruToken, validateMineruToken } from './settings.js';
+import { fetchClinicalTrials } from './clinical.js';
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -138,6 +140,27 @@ export function createHandler({ apiBase = '', publicDir, services }) {
     }
 
     /* ---------- 资料目录：读取 / 切换（真入口，不是说明弹窗） ---------- */
+    if (pathname === apiPrefix + '/settings/mineru') {
+      if (req.method === 'GET') return sendJson(res, 200, mineruSettingsStatus());
+      if (req.method !== 'POST') return sendJson(res, 405, { error: 'Method not allowed' });
+      const body = await readJsonBody(req);
+      if (body.action !== 'clear') {
+        try { validateMineruToken(body.token); }
+        catch (error) { return sendJson(res, 400, { error: 'invalid_token', detail: error.message }); }
+      }
+      try {
+        return sendJson(res, 200, body.action === 'clear' ? clearMineruToken() : saveMineruToken(body.token));
+      } catch (error) {
+        return sendJson(res, 500, { error: 'settings_write_failed', detail: String(error.message || error) });
+      }
+    }
+
+    if (pathname === apiPrefix + '/clinical/ctg') {
+      if (req.method !== 'GET') return sendJson(res, 405, { error: 'Method not allowed' });
+      try { return sendJson(res, 200, await fetchClinicalTrials()); }
+      catch (error) { return sendJson(res, 502, { error: 'clinical_source_unavailable', detail: String(error.message || error) }); }
+    }
+
     if (pathname === apiPrefix + '/root' && services.dataRoot) {
       try {
         if (req.method === 'GET') return sendJson(res, 200, { dir: services.dataRoot() });

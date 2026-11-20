@@ -124,3 +124,36 @@
 - Desktop 实机走查（CDP + 截图）：工作台真实显示「小勇宝 TestiPal v0.2.0」，顶栏 大字 / ? 疾病概要 / 资料目录 / AI 对话 四键在位；? 点击后面板可见（4 段：定义 / 医学资料规范和指南情况 / 目前治疗全景概要 / 发展趋势，hash #disease-primer，← 与 ✕ 双入口）；AI 对话点击打开宿主原生会话面板（未报错，草稿桥逻辑按 newSession+defaultWorkspace 实现核对）。
 - 发现并修复：0.2.0 全页只有顶栏一个 primer 入口，首页缺文字入口（36 号双入口要求）→ 0.2.1 首页新增「先了解这个病」卡片（data-primer-entry="home"）；重建 public、pack 0.2.1（sha256 0c38fe60…）并重装重验：双入口都在，两处均可打开同一四段面板，home 入口关闭后焦点回归正确。
 - 如实记录未通过/未验证：① 顶栏入口在程序化点击下关闭后焦点落到 body（真实鼠标点击路径待人工复核）；② scripts/probe-testicular-m2.mjs（远端版）本机缺 puppeteer-core，未能执行（环境缺口，不记为通过）；③ 独立评审轮次本轮未跑；④ 业务写入闭环（录入→入库→回读）在 Desktop 内未逐条点验。
+# 2026-11-20 · 设置入口补齐（v0.2.3）
+
+- Desktop 顶栏增加右上角齿轮，打开可用键盘切换的三 Tab 设置弹层：工作区、文档解析、临床数据库。工作区读服务端目录并沿用真实目录选择/校验/切换；取消和失败不更换目录。MinerU 与在线临床查询当前未接入，页面如实标明；临床页展示随包快照来源与通道终态。
+- `npm_config_cache=/private/tmp/testicular-npm-cache npm run check` 通过（含设置交互测试）；`dsh-wb-cli audit .` 40/40。默认 npm 缓存含其他所有者文件，故改用临时缓存，不修改用户缓存。
+- 已打包并更新至 DSH Desktop 实际 profile：`release/xyb-community-testicular-workbench-0.2.3.tgz`，SHA-256 `7117a117e1ca73005235abe45584c5916f1a64c6b2c5453bbd00736d231a2216`；安装副本版本 0.2.3 且含新设置代码。当前 Desktop 窗口仍显示 v0.2.1，需用户按宿主界面重启 Harness 后再做新版本真实界面验收；本次未自行重启。
+
+# 2026-11-20 · MinerU 配置与临床在线来源（v0.2.4）
+
+- MinerU 设置新增本机 Token 保存/状态/清除；保存文件默认在 `~/.testipal/secrets/mineru.json`，权限 600/目录 700，状态不回显原文。实际解析/上传尚未接入，界面如实说明。
+- 临床研究主页面与设置 Tab 均改为按需读取 ClinicalTrials.gov 固定公开病种查询；旧 9 条快照中的 FAILED 只作为历史来源状态。查询失败显示错误，不解释为零结果。固定词筛并非临床相关性审核或个人匹配。
+- 顶栏设置齿轮放大到 44×44 点击区域、26px 图标；顶栏资料目录按钮移除，资料目录改在设置工作区 Tab 访问。
+- 完整 `npm run check` 19/19、`npm run audit` 40/40；本机浏览器预览实际取得 20 条带官方原始链接的记录，官方 API 取回 422 条宽词总数，本次检查最近更新的 100 条。在线查询结果会随时间变化。
+- 已打包并更新 DSH Desktop 实际 profile：`release/xyb-community-testicular-workbench-0.2.4.tgz`，SHA-256 `8b3b518b68b20e2f7952919b92d416193726ae4b0d29cb59d5b9318bc7aa281b`；安装副本版本 0.2.4，注册描述符烟测通过。运行中的 Desktop 尚未重启 Harness，因此新界面在真宿主中的加载仍待重启后确认。
+
+# 2026-11-20 · AI 权限与安装完整性核验
+
+- 本机 Desktop 活动 profile 原配置 `defaultPreset: danger-full-access`；抽查一条 2026-11-20 新会话的持久权限事件，确认为完全访问且审批 `never`。工作台 AI 入口没有专属权限参数或核验。
+- 已将活动 profile 的**新会话默认**改为 `read-only`，备份 `/private/tmp/testicular-dsh-permission-backup.yml`；需要宿主重新加载，既有会话不追溯变更。开发模式须显式切换并指向 Git 源码工作区。只读限制写入，不限制任意本地读取，仍需宿主级数据白名单才能达成“仅获准资料”。
+- 新增外部完整性校验 `npm run verify:installed`，先核 tar SHA-256 再逐个核对安装文件；本机 42/42 文件一致，无多余文件。模拟改动、缺失、多余文件及安装包被篡改的测试通过。该校验尚非宿主启动前强制门禁；宿主级自动阻止加载/恢复需 DSH Desktop 实现。
+
+# 2026-11-20 · MinerU 隐私文案与页面滚动（v0.2.5）
+
+- 文档解析设置的说明与确认框改为提示：使用 MinerU 解析时文档经 MinerU API 上传到其服务，建议先遮盖姓名、证件号、联系方式等识别信息；当前版本仍只有 Token 配置，没有文件上传解析入口。
+- 生产页面内容区 `#main` 和侧栏补纵向滚动。EgoLite 以 900×550 检查标志物与化验、监测节点、治疗经过、生育力保存、感受笔记、就诊准备、临床研究、资料库；超长页均可滚到末尾。390×550 下标志物与化验也可滚到末尾。
+- 完整 `npm run check` 20/20，`npm run audit` 40/40。打包 `release/xyb-community-testicular-workbench-0.2.5.tgz`，SHA-256 `108866c1e78c4ca421009312734db6bcba1766d6864d9b731923848724fe4f64`；已安装到 DSH Desktop 活动 profile，安装副本 42/42 文件与可信包一致。未重启运行中的 Harness，新版在真实 Desktop 窗口中的加载待重启后确认。
+
+# 2026-11-20 · 设置操作修复（v0.2.6）
+
+- 根因一：Token 输入和保存按钮被未来上传确认复选框锁住；保存 Token 与上传文档是不同操作。已移除该门禁，保留 MinerU 上传与隐私脱敏提示。
+- 根因二：客户端使用 `uiWorkspace.pickDirectory()`，但 `INJECT` 未声明 `uiWorkspace`。已声明 `sessions`、`uiWorkspace`，目录按钮现在有宿主能力；交互测试断言选择器调用和 POST 写入。
+- 根因三：目录指针只写在新库，启动仍从固定默认目录读取。已把最后选择写回固定启动库，连续切换后重开仍落在最后目录；失败切换不改选择。
+- `npm run check` 21/21、`npm run audit` 40/40；0.2.6 包 SHA-256 `34e1c833d2e4fc41212870ae319a89ce05cc4606f6d263bf558c0c40e41b85fa`，已安装到 DSH Desktop 活动 profile，安装副本 42/42 一致，注册烟测通过。
+- 真 Desktop 点击验收尚未完成：本次 native CUA 连接失败，cmux CUA 报 `Computer Use onboarding is still in progress`；未重启运行中的 Harness。需用户按宿主界面重启后实际点击输入框、保存和目录选择器确认。

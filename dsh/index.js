@@ -42,7 +42,7 @@ export const API_BASE_HOSTED = `/api/${API_PREFIX}`
 export function createHostHandler(ctx, workbench) {
   const services = {
     version, displayVersion,
-    capabilities: ['bootstrap', 'health', 'data-root', 'subjects', 'records', 'export'],
+    capabilities: ['bootstrap', 'health', 'data-root', 'subjects', 'records', 'export', 'mineru-settings', 'clinical-ctg'],
     health: () => workbench.health(),
     bootstrap: () => workbench.bootstrap(),
     /* 资料目录与档案：面板「配置目录」与页面「新建我的档案」都走这些 */

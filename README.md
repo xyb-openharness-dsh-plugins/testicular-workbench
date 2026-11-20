@@ -4,6 +4,8 @@
 
 本机优先的睾丸癌（生殖细胞肿瘤）患者记录工作台：标志物、监测节点、生育力保存、就诊准备与资料回顾。
 
+AI 会话权限、Git 源码开发与安装包校验见 [AI 会话与安装完整性说明](docs/38-AI-SESSION-AND-INSTALL-INTEGRITY.md)。本机安装校验命令：`npm run verify:installed`。
+
 ## 疾病概要
 
 ### 定义

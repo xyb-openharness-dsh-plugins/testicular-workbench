@@ -15,6 +15,8 @@ export const HEALTH_URL = '/api/testicular/api/health'
 export const BOOTSTRAP_URL = '/api/testicular/api/bootstrap'
 export const SUBJECTS_URL = '/api/testicular/api/subjects'
 export const DATA_ROOT_URL = '/api/testicular/api/root'
+export const MINERU_SETTINGS_URL = '/api/testicular/api/settings/mineru'
+export const CLINICAL_URL = '/api/testicular/api/clinical/ctg'
 /* 资料目录口径（与 dsh/server.js 的 checkDataDir 同一条规则，服务端会再判一遍） */
 const HOME_EXACT = /^(\/Users\/[^/]+|\/home\/[^/]+|\/root|[A-Za-z]:\\Users\\[^\\]+)$/i
 const FORBIDDEN_DIR = /((Desktop|桌面)$|(Downloads?|下载(夹)?)$|^(\/tmp|\/private\/tmp|\/var\/folders\/|\/private\/var\/folders\/))/i
@@ -28,7 +30,7 @@ export const META = {
 }
 
 export const CLIENT_NAME = 'testicular-workbench'
-export const INJECT = ['desktopWorkbenches']
+export const INJECT = ['desktopWorkbenches', 'sessions', 'uiWorkspace']
 
 /* 会话面板参数：由 scripts/build-client.mjs 从 lib/layout.js 的 AGENT_PANE 注入（不许手写第二份 0.35） */
 const AGENT = __AGENT_PANE__
@@ -61,6 +63,7 @@ function buildPanel(React, host) {
   const { useState, useEffect, useRef } = React
   const h = React.createElement
   const service = host?.desktopWorkbenches
+  const uiWorkspace = host?.uiWorkspace
 
   /* ---------------- 会话归属（与家族各仓同一套判定） ---------------- */
 
@@ -161,6 +164,9 @@ function buildPanel(React, host) {
   const rowStyle = { display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap', borderTop: '1px solid var(--wb-line, #dce7df)', paddingTop: 8 }
   const mutedStyle = { color: 'var(--wb-muted, #596c62)', fontSize: 12.5 }
   const inputStyle = { minHeight: 36, border: '1px solid var(--wb-line, #dce7df)', borderRadius: 10, padding: '4px 10px', font: 'inherit', background: 'var(--wb-paper, #f7faf8)', color: 'inherit' }
+  const settingsTabs = [['workspace', '工作区'], ['parser', '文档解析（MinerU）'], ['clinical', '临床数据库']]
+  const settingsBackdropStyle = { position: 'absolute', inset: 0, zIndex: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 12, background: 'rgba(19, 35, 27, .55)' }
+  const settingsDialogStyle = { width: 'min(100%, 660px)', maxHeight: 'min(90%, 720px)', display: 'flex', flexDirection: 'column', overflow: 'hidden', borderRadius: 18, background: 'var(--wb-surface, #fff)', color: 'var(--wb-ink, #34413c)', boxShadow: '0 18px 48px rgba(0,0,0,.2)' }
 
   return function Panel({ conversation }) {
     const [health, setHealth] = useState(null)
@@ -175,6 +181,16 @@ function buildPanel(React, host) {
     const [hovering, setHovering] = useState(false)
     const [note, setNote] = useState('')
     const [dataDir, setDataDir] = useState('')
+    const [settingsOpen, setSettingsOpen] = useState(false)
+    const [settingsTab, setSettingsTab] = useState('workspace')
+    const [settingsBusy, setSettingsBusy] = useState(false)
+    const [mineruStatus, setMineruStatus] = useState(null)
+    const [mineruToken, setMineruToken] = useState('')
+    const [mineruBusy, setMineruBusy] = useState(false)
+    const [mineruNote, setMineruNote] = useState('')
+    const [clinicalData, setClinicalData] = useState(null)
+    const [clinicalError, setClinicalError] = useState('')
+    const [clinicalBusy, setClinicalBusy] = useState(false)
     const [, setSessionRevision] = useState(0)
 
     /* ---------------- 档案（最小档案 UI：列表 / 当前 / 新建 / 切换） ---------------- */
@@ -184,6 +200,15 @@ function buildPanel(React, host) {
 
     const dragHostRef = useRef(null)
     const frameRef = useRef(null)
+    const settingsCloseRef = useRef(null)
+    const settingsTriggerRef = useRef(null)
+    const settingsBusyRef = useRef(false)
+    const mineruBusyRef = useRef(false)
+
+    const closeSettings = () => {
+      setMineruToken('')
+      setSettingsOpen(false)
+    }
     const creatingRef = useRef(false)
 
     /* customFrame 下宿主始终传 conversation 容器；无会话时只是 display:none。
@@ -235,20 +260,92 @@ function buildPanel(React, host) {
       let alive = true
       fetch(DATA_ROOT_URL, { credentials: 'same-origin' })
         .then((response) => (response.ok ? response.json() : null))
-        .then((info) => { if (alive && info && info.dir) setDataDir(info.dir) })
-        .catch(() => { /* 服务未就绪时静默，不编一个假路径 */ })
+        .then((info) => { if (alive) setDataDir(info?.dir || '') })
+        .catch(() => { if (alive) setNote('当前资料目录读取失败；请检查本机服务。') })
       return () => { alive = false }
     }, [])
 
+    useEffect(() => {
+      if (!settingsOpen) return undefined
+      settingsCloseRef.current?.focus()
+      const onKeyDown = (event) => {
+        if (event.key === 'Escape' && !settingsBusyRef.current && !mineruBusyRef.current) { event.preventDefault(); closeSettings() }
+        if (event.key !== 'Tab') return
+        const dialog = settingsCloseRef.current?.closest('[role="dialog"]')
+        const focusable = Array.from(dialog?.querySelectorAll('button:not(:disabled), [href], input:not(:disabled)') || [])
+        if (!focusable.length) return
+        const first = focusable[0], last = focusable.at(-1)
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus() }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus() }
+      }
+      document.addEventListener('keydown', onKeyDown)
+      return () => { document.removeEventListener('keydown', onKeyDown); settingsTriggerRef.current?.focus() }
+    }, [settingsOpen])
+
+    useEffect(() => {
+      if (!settingsOpen || settingsTab !== 'parser') return undefined
+      const controller = new AbortController()
+      fetch(MINERU_SETTINGS_URL, { credentials: 'same-origin', signal: controller.signal, cache: 'no-store' })
+        .then(async (response) => {
+          const result = await response.json()
+          if (!response.ok) throw new Error(result.detail || result.error || `读取失败 (${response.status})`)
+          if (!controller.signal.aborted) { setMineruStatus(result); setMineruNote('') }
+        })
+        .catch((failure) => { if (!controller.signal.aborted) setMineruNote(`配置状态读取失败：${failure.message}`) })
+      return () => controller.abort()
+    }, [settingsOpen, settingsTab])
+
+    async function changeMineruToken(action) {
+      if (mineruBusy) return
+      mineruBusyRef.current = true
+      setMineruBusy(true)
+      setMineruNote('')
+      try {
+        const response = await fetch(MINERU_SETTINGS_URL, {
+          method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(action === 'clear' ? { action: 'clear' } : { token: mineruToken }),
+        })
+        const result = await response.json()
+        if (!response.ok) throw new Error(result.detail || result.error || `保存失败 (${response.status})`)
+        setMineruStatus(result)
+        setMineruToken('')
+        setMineruNote(action === 'clear' ? '已清除本机密钥文件中的 Token。' : 'Token 已保存到本机密钥文件。')
+      } catch (failure) {
+        setMineruNote(`未保存：${failure.message}`)
+      } finally { mineruBusyRef.current = false; setMineruBusy(false) }
+    }
+
+    async function refreshClinical() {
+      if (clinicalBusy) return
+      setClinicalBusy(true)
+      setClinicalError('')
+      try {
+        const response = await fetch(CLINICAL_URL, { credentials: 'same-origin', cache: 'no-store' })
+        const result = await response.json()
+        if (!response.ok) throw new Error(result.detail || result.error || `查询失败 (${response.status})`)
+        setClinicalData(result)
+      } catch (failure) { setClinicalError(failure.message) }
+      finally { setClinicalBusy(false) }
+    }
+
+    useEffect(() => {
+      if (settingsOpen && settingsTab === 'clinical' && !clinicalData && !clinicalBusy) void refreshClinical()
+    }, [settingsOpen, settingsTab])
+
     /* 「资料目录」= 真入口：宿主选择器 → 口径校验 → 落盘 → 回显 */
     async function pickDataDir() {
-      const ui = host && host.uiWorkspace
-      if (!ui || typeof ui.pickDirectory !== 'function') {
+      if (settingsBusy) return
+      settingsBusyRef.current = true
+      setSettingsBusy(true)
+      try { await doPickDataDir() } finally { settingsBusyRef.current = false; setSettingsBusy(false) }
+    }
+    async function doPickDataDir() {
+      if (!uiWorkspace || typeof uiWorkspace.pickDirectory !== 'function') {
         setNote('当前 Desktop 没有提供目录选择能力；数据仍写在默认位置（目录未真实挂载）。')
         return
       }
       let dir = ''
-      try { dir = await ui.pickDirectory() } catch (pickError) {
+      try { dir = await uiWorkspace.pickDirectory() } catch (pickError) {
         setNote('没能打开目录选择器：' + ((pickError && pickError.message) || pickError))
         return
       }
@@ -492,6 +589,45 @@ function buildPanel(React, host) {
           onClick: () => setProfileForm({ open: true, name: '', busy: false }),
         }, '＋ 新建档案'))
 
+    const settingsContent = settingsTab === 'workspace'
+      ? h('div', null,
+        h('h3', null, '本机资料目录'),
+        h('p', { style: { overflowWrap: 'anywhere' } }, dataDir || '尚未取得当前目录'),
+        h('p', { style: mutedStyle }, '目录由本机服务返回。更换目录不会搬迁或删除旧目录资料；主目录、桌面、下载根目录和临时目录不可选。'),
+        h('button', { type: 'button', style: buttonStyle, disabled: settingsBusy, onClick: () => void pickDataDir() }, settingsBusy ? '正在处理…' : '选择资料目录'),
+        h('p', { style: mutedStyle }, '原件、派生文件、数据库占用：当前版本未提供容量统计。备份请复制当前资料目录；此设置页不执行恢复或迁移。'))
+      : settingsTab === 'parser'
+        ? h('div', null,
+          h('h3', null, '文档解析 · MinerU'),
+          h('p', null, '使用 MinerU 解析文档时，文档会经由 MinerU API 上传至其服务。病历等文件可能包含个人隐私信息，建议先遮盖姓名、证件号、联系方式等可识别信息，再选择上传。当前版本仅提供 Token 配置，尚未接入文件解析与上传。'),
+          h('p', { role: 'status', style: mutedStyle }, mineruStatus
+            ? `${mineruStatus.sourceLabel}；${mineruStatus.masked || '无生效 Token'}；密钥文件：${mineruStatus.file}${mineruStatus.permissions ? `（权限 ${mineruStatus.permissions}）` : ''}`
+            : '正在读取本机 Token 状态…'),
+          mineruStatus?.error && h('p', { role: 'alert' }, mineruStatus.error),
+          h('p', { role: 'note', style: mutedStyle }, '今后使用 MinerU 解析文档时，文件会发送至 MinerU API；上传前请先检查并脱敏个人隐私信息。'),
+          h('label', { style: { display: 'grid', gap: 4, marginTop: 12 } }, 'MinerU Token',
+            h('input', { type: 'password', autoComplete: 'new-password', value: mineruToken, disabled: mineruBusy, onChange: (event) => setMineruToken(event.target.value), placeholder: '填写新 Token（已有值不会回显）', style: inputStyle })),
+          h('div', { style: { display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 12 } },
+            h('button', { type: 'button', style: buttonStyle, disabled: !mineruToken.trim() || mineruBusy, onClick: () => void changeMineruToken('save') }, mineruBusy ? '处理中…' : '保存 Token'),
+            h('button', { type: 'button', style: ghostStyle, disabled: mineruBusy || !mineruStatus?.fileExists, onClick: () => void changeMineruToken('clear') }, '清除本机 Token')),
+          mineruNote && h('p', { role: 'status' }, mineruNote),
+          h('p', { style: mutedStyle }, '申请或重置 Token：在 MinerU 官网注册、进入 API Token 页面、复制 Token、返回此处保存。解析模型将固定为 pipeline；文件解析接通后仍需逐份明确授权。'),
+          h('a', { href: mineruStatus?.tokenUrl || 'https://mineru.net/apiManage/token', target: '_blank', rel: 'noopener noreferrer' }, '打开 MinerU Token 页面 ↗'),
+          h('p', { style: mutedStyle }, '现有记录通过手工录入保存在本机。'))
+        : h('div', null,
+          h('h3', null, '临床数据库'),
+          h('p', null, '按需查询 ClinicalTrials.gov 官方登记源；固定宽词 testicular cancer，不发送患者档案。旧快照的 FAILED 是历史采集状态，不能代表当前查询。'),
+          h('button', { type: 'button', style: buttonStyle, disabled: clinicalBusy, onClick: () => void refreshClinical() }, clinicalBusy ? '查询中…' : '刷新官方记录'),
+          clinicalError && h('p', { role: 'alert' }, `本次查询失败：${clinicalError}`),
+          clinicalData ? h('div', null,
+            h('p', { style: mutedStyle }, `取得时间：${clinicalData.retrievedAt}；官方宽词返回总数：${clinicalData.totalCount}；本次检查 ${clinicalData.examinedCount} 条，展示 ${clinicalData.studies.length} 条。${clinicalData.note}`),
+            h('ul', { style: { paddingLeft: 20 } }, clinicalData.studies.slice(0, 10).map((study) => h('li', { key: study.id },
+              h('a', { href: study.url, target: '_blank', rel: 'noopener noreferrer' }, `${study.id} · ${study.title}`),
+              ` · ${study.status}`))))
+            : h('p', { role: 'status' }, clinicalBusy ? '正在连接官方登记源…' : '尚未取得本次查询结果。'),
+          h('a', { href: 'https://clinicaltrials.gov/search?cond=testicular%20cancer', target: '_blank', rel: 'noopener noreferrer' }, '打开 ClinicalTrials.gov 官方检索 ↗'),
+          h('p', { style: mutedStyle }, '记录未经逐条相关性审核，不代表可入组或适合个人；登记状态请核对原始记录。'))
+
     return h('main', { className: 'wb-testicular', 'data-font': large ? 'large' : 'standard', style: rootStyle },
       // 首个子元素必须是语义 <header>：避让 macOS 窗口按钮（--dsh-frame-leading-clearance）。
       h('header', { style: headerStyle },
@@ -503,15 +639,11 @@ function buildPanel(React, host) {
           h('button', { type: 'button', 'aria-pressed': large, onClick: () => setLarge(!large) }, large ? '标准字' : '大字'),
           h('button', { type: 'button', style: ghostStyle, onClick: () => frameRef.current?.contentWindow?.postMessage({ type: 'testicular:open-primer' }, window.location.origin), 'aria-label': '打开疾病概要' }, '? 疾病概要'),
           h('button', {
-            type: 'button', style: ghostStyle, onClick: () => void pickDataDir(),
-            title: dataDir ? ('当前资料目录：' + dataDir) : '选择本机资料目录（拒绝主目录/桌面/下载根/tmp）',
-            'aria-label': '选择资料目录',
-          }, '资料目录'),
-          h('button', {
             type: 'button', style: buttonStyle, onClick: onAgentClick,
             disabled: connecting || (!hasConversation && !canOpenSession), 'aria-label': `AI 对话：${agentLabel}`,
           }, agentLabel),
-          hasConversation && paneOpen && h('button', { type: 'button', style: ghostStyle, onClick: () => setPaneOpen(false), 'aria-label': '收起 AI 对话面板' }, '×'))),
+          hasConversation && paneOpen && h('button', { type: 'button', style: ghostStyle, onClick: () => setPaneOpen(false), 'aria-label': '收起 AI 对话面板' }, '×'),
+          h('button', { type: 'button', ref: settingsTriggerRef, style: { ...ghostStyle, minWidth: 44, minHeight: 44, padding: 0, fontSize: 26, lineHeight: 1 }, onClick: () => { setSettingsTab('workspace'); setSettingsOpen(true) }, 'aria-label': '设置', title: '设置' }, '⚙'))),
       h('style', null, theme),
       h('div', { ref: dragHostRef, style: bodyStyle },
         h('div', { style: businessStyle },
@@ -561,7 +693,30 @@ function buildPanel(React, host) {
             ? '宿主正在恢复会话或等待你选择资料目录。'
             : '点顶栏「AI 对话」创建或打开本工作台的原生会话。'),
           h('span', null, '没有会话也不影响记录：业务区的资料整理照常可用.'))),
-        dragging && !narrow && h('div', { 'aria-hidden': 'true', style: dragShieldStyle })))
+        dragging && !narrow && h('div', { 'aria-hidden': 'true', style: dragShieldStyle }),
+        settingsOpen && h('div', { style: settingsBackdropStyle, onMouseDown: (event) => { if (event.target === event.currentTarget && !settingsBusy && !mineruBusy) closeSettings() } },
+          h('section', { role: 'dialog', 'aria-modal': 'true', 'aria-label': '设置', style: settingsDialogStyle },
+            h('div', { style: { display: 'flex', alignItems: 'center', gap: 12, padding: '14px 18px', borderBottom: '1px solid var(--wb-line)' } },
+              h('h2', { style: { margin: 0, fontSize: '1.2em', flex: 1 } }, '设置'),
+              h('button', { type: 'button', ref: settingsCloseRef, style: ghostStyle, disabled: settingsBusy || mineruBusy, onClick: closeSettings, 'aria-label': '关闭设置' }, '×')),
+            h('div', { role: 'tablist', 'aria-label': '设置分类', style: { display: 'flex', gap: 6, padding: '12px 18px', overflowX: 'auto' } }, settingsTabs.map(([id, label]) => h('button', {
+              key: id, type: 'button', role: 'tab', id: `testicular-settings-${id}`, 'aria-selected': settingsTab === id,
+              'aria-controls': 'testicular-settings-panel', tabIndex: settingsTab === id ? 0 : -1,
+              style: settingsTab === id ? buttonStyle : ghostStyle,
+              onClick: () => setSettingsTab(id),
+              onKeyDown: (event) => {
+                if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return
+                event.preventDefault()
+                const index = settingsTabs.findIndex(([tab]) => tab === id)
+                const next = event.key === 'Home' ? 0 : event.key === 'End' ? 2 : (index + (event.key === 'ArrowRight' ? 1 : 2)) % 3
+                setSettingsTab(settingsTabs[next][0])
+                event.currentTarget.parentElement?.children[next]?.focus()
+              },
+            }, label))),
+            h('div', { id: 'testicular-settings-panel', role: 'tabpanel', 'aria-labelledby': `testicular-settings-${settingsTab}`, tabIndex: 0, style: { overflowY: 'auto', padding: '4px 18px 18px', flex: 1 } },
+              settingsContent, shownNote && h('p', { role: 'status', style: mutedStyle }, shownNote)),
+            h('div', { style: { padding: '12px 18px', borderTop: '1px solid var(--wb-line)', textAlign: 'right' } },
+              h('button', { type: 'button', style: ghostStyle, disabled: settingsBusy || mineruBusy, onClick: closeSettings }, '完成'))))))
   }
 }
 
